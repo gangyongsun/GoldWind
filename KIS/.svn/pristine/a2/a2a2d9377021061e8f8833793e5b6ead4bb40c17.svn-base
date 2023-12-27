@@ -1,0 +1,208 @@
+package cn.com.goldwind.kis.shiro.session;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.UnknownSessionException;
+import org.apache.shiro.session.mgt.eis.AbstractSessionDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import cn.com.goldwind.kis.utils.LoggerUtils;
+import cn.com.goldwind.kis.utils.SerializeUtil;
+import cn.com.goldwind.kis.utils.redis.RedisUtil;
+import redis.clients.jedis.Jedis;
+
+@Repository
+public class SessionRepositoryImpl extends AbstractSessionDAO implements SessionRepository {
+	/**
+	 * 这里有个小BUG，因为Redis使用序列化后，Key反序列化回来发现前面有一段乱码，解决的办法是存储缓存不序列化
+	 */
+	public static final String REDIS_SHIRO_ALL = "*goldwind-kis-shiro-session:*";
+	public static final String REDIS_SHIRO_SESSION = "goldwind-kis-shiro-session:";
+	public static final String SESSION_STATUS = "kis-online-status";
+	private static final int DB_INDEX = 1;
+
+	@Autowired
+	private RedisUtil redisUtil;
+
+	private Collection<Session> getAllSession(int dbIndex, String redisShiroSession) {
+		Set<Session> sessions = new HashSet<Session>();
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getJedis();
+			jedis.select(dbIndex);
+
+			Set<byte[]> byteKeys = jedis.keys((REDIS_SHIRO_ALL).getBytes());
+			if (byteKeys != null && byteKeys.size() > 0) {
+				for (byte[] byteKey : byteKeys) {
+					Session obj = SerializeUtil.deserialize(jedis.get(byteKey), Session.class);
+					if (obj instanceof Session) {
+						sessions.add(obj);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (jedis != null) {
+				redisUtil.returnResource(jedis);
+			}
+		}
+		return sessions;
+	}
+
+	/**
+	 * 组合session Key
+	 * 
+	 * @param sessionId
+	 * @return
+	 */
+	private String buildRedisSessionKey(Serializable sessionId) {
+		return REDIS_SHIRO_SESSION + sessionId;
+	}
+
+	@Override
+	public Collection<Session> getActiveSessions() {
+		Collection<Session> sessions = null;
+		try {
+			sessions = getAllSession(DB_INDEX, REDIS_SHIRO_SESSION);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LoggerUtils.fmtError(getClass(), e, "获取全部session异常");
+		}
+		return sessions;
+	}
+
+	@Override
+	public void update(Session session) throws UnknownSessionException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void delete(Session session) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected Serializable doCreate(Session session) {
+		Serializable sessionId = this.generateSessionId(session);
+		this.assignSessionId(session, sessionId);
+		save(session);
+		return sessionId;
+	}
+
+	@Override
+	protected Session doReadSession(Serializable sessionId) {
+		return getSession(sessionId);
+	}
+
+	@Override
+	public Session getSession(Serializable sessionId) {
+		Session session = null;
+		if (sessionId != null) {
+			try {
+				byte[] value = getValueByKey(DB_INDEX, SerializeUtil.serialize(buildRedisSessionKey(sessionId)));
+				session = SerializeUtil.deserialize(value, Session.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				LoggerUtils.fmtError(getClass(), e, "获取session异常，id:[%s]", sessionId);
+			}
+		} else {
+			throw new NullPointerException("session id is empty,cannot get the session!");
+		}
+		return session;
+	}
+	@Override
+	public void deleteSession(Serializable id) {
+		if (id != null) {
+			try {
+				deleteByKey(DB_INDEX, SerializeUtil.serialize(buildRedisSessionKey(id)));
+			} catch (Exception e) {
+				e.printStackTrace();
+				LoggerUtils.fmtError(getClass(), e, "删除session出现异常，id:[%s]", id);
+			}
+		} else {
+			throw new NullPointerException("session id is empty,cannot delete the session!");
+		}
+	}
+
+	@Override
+	public void save(Session session) {
+		if (null != session && null != session.getId()) {
+			try {
+				byte[] key = SerializeUtil.serialize(buildRedisSessionKey(session.getId()));
+				// 不存在才添加
+				if (null == session.getAttribute(SESSION_STATUS)) {
+					// Session 踢出自存存储
+					SessionStatus sessionStatus = new SessionStatus();
+					session.setAttribute(SESSION_STATUS, sessionStatus);
+				}
+
+				byte[] value = SerializeUtil.serialize(session);
+				saveValueByKey(DB_INDEX, key, value, (int) (session.getTimeout() / 1000));
+			} catch (Exception e) {
+				e.printStackTrace();
+				LoggerUtils.fmtError(getClass(), e, "save session error，id:[%s]", session.getId());
+			}
+		} else {
+			throw new NullPointerException("session is null, cannot save the session!");
+		}
+	}
+
+	private void saveValueByKey(int dbIndex, byte[] key, byte[] value, int expireTime) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getJedis();
+			jedis.select(dbIndex);
+			jedis.set(key, value);
+			if (expireTime > 0) {
+				jedis.expire(key, expireTime);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (jedis != null) {
+				redisUtil.returnResource(jedis);
+			}
+		}
+	}
+
+	private byte[] getValueByKey(int dbIndex, byte[] key) {
+		byte[] result = null;
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getJedis();
+			jedis.select(dbIndex);
+			result = jedis.get(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (jedis != null) {
+				redisUtil.returnResource(jedis);
+			}
+		}
+		return result;
+	}
+	
+	private void deleteByKey(int dbIndex, byte[] key) {
+		Jedis jedis = null;
+		try {
+			jedis = redisUtil.getJedis();
+			jedis.select(dbIndex);
+			Long result = jedis.del(key);
+			LoggerUtils.fmtDebug(getClass(), "删除Session结果：%s", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (jedis != null) {
+				redisUtil.returnResource(jedis);
+			}
+		}
+	}
+}

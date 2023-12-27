@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title> - 项目详情</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="wrapper wrapper-content animated fadeInUp">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="m-b-md">
+                                    <a href="project_detail.html#" class="btn btn-white btn-xs pull-right">编辑项目</a>
+                                    <h2>A10001 2.5MW风机说明书翻译项目</h2>
+                                </div>
+                                <dl class="dl-horizontal">
+                                    <dt>状态：</dt>
+                                    <dd><span class="label label-primary">进行中</span>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <dl class="dl-horizontal">
+                                    <dt>项目经理：</dt>
+                                    <dd><a href="project_detail.html#" class="text-navy"> 燕玉鑫</a></dd>
+                                    <dt>消息：</dt>
+                                    <dd>111111111</dd>
+                                    <dt>申请者：</dt>
+                                    <dd><a href="project_detail.html#" class="text-navy"> 6.5MW风机研发中心</a></dd>
+                                    <dt>发起时间：</dt>
+                                    <dd>2019年 7月 19日</dd>
+                                </dl>
+                            </div>
+                            <div class="col-sm-7" id="cluster_info">
+                                <dl class="dl-horizontal">
+
+                                    <dt>最近更新：</dt>
+                                    <dd>2019年 8月 15日 22:03</dd>
+                                    <dt>开始时间：</dt>
+                                    <dd>2019年 8月 1日 03:01</dd>
+                                    <dt>参与成员：</dt>
+                                    <dd class="project-people">
+                                        <a href="project_detail.html">
+                                            <img alt="image" class="img-circle" src="img/a3.jpg">
+                                        </a>
+                                        <a href="project_detail.html">
+                                            <img alt="image" class="img-circle" src="img/a1.jpg">
+                                        </a>
+                                        <a href="project_detail.html">
+                                            <img alt="image" class="img-circle" src="img/a2.jpg">
+                                        </a>
+                                        <a href="project_detail.html">
+                                            <img alt="image" class="img-circle" src="img/a4.jpg">
+                                        </a>
+                                        <a href="project_detail.html">
+                                            <img alt="image" class="img-circle" src="img/a5.jpg">
+                                        </a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <dl class="dl-horizontal">
+                                    <dt>当前进度</dt>
+                                    <dd>
+                                        <div class="progress progress-striped active m-b-sm">
+                                            <div style="width: 60%;" class="progress-bar"></div>
+                                        </div>
+                                        <small>当前已完成项目总进度的 <strong>60%</strong></small>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="row m-t-sm">
+                            <div class="col-sm-12">
+                                <div class="panel blank-panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-options">
+                                            <ul class="nav nav-tabs">
+                                                <li><a href="project_detail.html#tab-1" data-toggle="tab">项目进程消息</a>
+                                                </li>
+                                                <li class=""><a href="project_detail.html#tab-2" data-toggle="tab">项目过程文件下载</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab-1">
+                                                <div class="feed-activity-list">
+                                                    <div class="feed-element">
+                                                        <a href="profile.html#" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="img/a1.jpg">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right text-navy">5天前</small>
+                                                            <medium class="text-navy"><strong>张翼</strong></medium> 上传了 <medium class="text-navy"><strong>A10001 2.5MW风机说明书翻译项目原文件</strong></medium>
+                                                            <br>
+                                                            <div class="well">这里是备注信息，可以说明是否对文件进行了修改等</div>
+                                                            <div class="pull-right">
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>查看</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="feed-element">
+                                                        <a href="profile.html#" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="img/profile.jpg">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right">1小时前</small>
+                                                            <medium class="text-navy"><strong>燕玉鑫</strong></medium> 检查了 <medium class="text-navy"><strong>A10001 2.5MW风机说明书翻译项目原文件</strong></medium>
+                                                            <br>
+                                                            <div class="well">该文件已经上传，并做了相应修改，请留意！！</div>
+                                                            <div class="pull-right">
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>查看</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="feed-element">
+                                                        <a href="profile.html#" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="img/a2.jpg">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right">2小时前</small>
+                                                            <medium class="text-navy"><strong>燕玉鑫</strong></medium> 将 
+															<medium class="text-navy"><strong>A10001 2.5MW风机说明书翻译项目原文件</strong></medium> 发送给 
+															<medium class="text-navy"><strong>崔洪建</strong></medium>
+                                                            <br>
+                                                            <div class="well">
+                                                                请处理该文件，并上传XXX文件，thanks!!
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>查看</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="feed-element">
+                                                        <a href="profile.html#" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="img/a2.jpg">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right">2小时前</small>
+                                                            <medium class="text-navy"><strong>崔洪建</strong></medium> 完成了  
+															<medium class="text-navy"><strong>A10001 2.5MW风机说明书翻译项目原文件</strong></medium> 的处理并上传
+                                                            <br>
+                                                            <div class="well">
+                                                                文件处理完成，thanks!!
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>查看</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="feed-element">
+                                                        <a href="profile.html#" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="img/a2.jpg">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right">2小时前</small>
+                                                            <medium class="text-navy"><strong>燕玉鑫</strong></medium> 检查了来自
+															<medium class="text-navy"><strong>崔洪建</strong></medium> 处理的
+															<medium class="text-navy"><strong>A10001 2.5MW风机说明书翻译项目文件</strong></medium>
+                                                            <br>
+                                                            <div class="well">
+                                                                该文件已经检查通过，thanks!!
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>查看</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="tab-pane" id="tab-2">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>完成状态</th>
+                                                            <th>处理者</th>
+                                                            <th>完成时间</th>
+															<th>文件</th>
+                                                            <th>操作</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <span class="label label-primary"><i class="fa fa-check"></i> 已完成</span>
+                                                            </td>
+                                                            <td>张翼</td>
+                                                            <td>2019年 8月1日 12:03 </td>
+                                                            <td>2.5MW风机说明书</td>
+                                                            <td>
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>下载</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <span class="label label-primary"><i class="fa fa-check"></i> 已完成</span>
+                                                            </td>
+                                                            <td>燕玉鑫</td>
+                                                            <td>2019年 8月2日 12:03 </td>
+                                                            <td>2.5MW风机说明书</td>
+                                                            <td>
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>下载</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <span class="label label-primary"><i class="fa fa-check"></i> 已完成</span>
+                                                            </td>
+                                                            <td>崔洪建</td>
+                                                            <td>2019年 8月3日 12:03 </td>
+                                                            <td>2.5MW风机说明书 sdlppx文件包、xlsx字数表、处理过的文件</td>
+                                                            <td>
+                                                                <a class="btn btn-xs btn-primary"><i class="fa fa-eye"></i>下载</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="wrapper wrapper-content">
+                <div class="row animated fadeInRight">
+                    <div class="col-sm-12">
+                        <div class="ibox float-e-margins">
+                            <div class="" id="ibox-content">
+                                <div id="vertical-timeline" class="vertical-container light-timeline">
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon navy-bg">
+                                            <i class="fa fa-briefcase"></i>
+                                        </div>
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：TEP人员反馈报价</h2>
+                                            <p>TEP公司AAA进行项目报价</p>
+                                            <a href="#" class="btn btn-sm btn-primary"> 更多信息</a>
+                                            <span class="vertical-date"> 今天 <br> <small>2019年8月2日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon blue-bg">
+                                            <i class="fa fa-file-text"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：前处理文件检查</h2>
+                                            <p>燕玉鑫（PM）下载前处理文件，并检查</p>
+                                            <a href="#" class="btn btn-sm btn-success"> 下载文档 </a>
+                                            <span class="vertical-date"> 今天 <br><small>2019年8月2日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon lazur-bg">
+                                            <i class="fa fa-coffee"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：文件前处理</h2>
+                                            <p>崔洪建（Eng）下载预处理文件，进行前处理，提交前处理文件</p>
+                                            <a href="#" class="btn btn-sm btn-info">更多</a>
+                                            <span class="vertical-date"> 昨天 <br><small>2019年8月1日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon yellow-bg">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：源文件预处理</h2>
+                                            <p>燕玉鑫（PM）下载源文件，预处理，提交预处理文件</p>
+                                            <span class="vertical-date">昨天 <br><small>2019年8月1日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon lazur-bg">
+                                            <i class="fa fa-user-md"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：源文件提交</h2>
+                                            <p>张翼（PM）提交源文件</p>
+                                            <span class="vertical-date">前天 <br><small>2019年7月30日</small></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $('#loading-example-btn').click(function () {
+                btn = $(this);
+                simpleLoad(btn, true)
+
+                // Ajax example
+                //                $.ajax().always(function () {
+                //                    simpleLoad($(this), false)
+                //                });
+
+                simpleLoad(btn, false)
+            });
+        });
+
+        function simpleLoad(btn, state) {
+            if (state) {
+                btn.children().addClass('fa-spin');
+                btn.contents().last().replaceWith(" Loading");
+            } else {
+                setTimeout(function () {
+                    btn.children().removeClass('fa-spin');
+                    btn.contents().last().replaceWith(" Refresh");
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

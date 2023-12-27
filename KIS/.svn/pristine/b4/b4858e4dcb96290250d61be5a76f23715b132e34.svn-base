@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="shortcut icon" href="../static/img/fav.png">
+<meta name="author" content="codepixer">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta charset="UTF-8">
+
+<title>Goldwind-HotTerminology</title>
+<link rel="stylesheet" th:href="@{/static/css/fonts.google.1.css}" href="../static/css/fonts.google.1.css">
+<link rel="stylesheet" th:href="@{/static/css/fonts.google.2.css}" href="../static/css/fonts.google.2.css">
+<link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css">
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.css}" href="../static/css/font-awesome.css">
+<link rel="stylesheet" th:href="@{/static/css/main.css}" href="../static/css/main.css">
+<link rel="stylesheet" th:href="@{/static/css/animate.css}" href="../static/css/animate.css">
+<link rel="stylesheet" th:href="@{/static/css/style.css}" href="../static/css/style.css">
+</head>
+<body>
+ 	<div class="row">
+		<div class="col-lg-3 col-xs-3 col-md-3 col-sm-3" th:each="hotKeyInfo:${hotKeyInfoList}">
+	   		<div class="file-box ">
+	        	<div class="file">
+	            	<a th:id="${hotKeyInfo.id}" onclick="javascript:showDetail(this.id);return false;">
+                    	<span class="corner"></span>
+                       	<!-- <img th:if="${hotKeyInfo.image !=''}" alt="image" class="img-responsive img-rounded" th:src="${'http://10.12.9.34/imgs/'+hotKeyInfo.image}" width="198" height="138.27"> -->
+                       	<!-- <img th:unless="${hotKeyInfo.image !=''}" alt="image" class="img-rounded" src="http://10.12.9.34/imgs/404.png" width="198" height="138.27"> -->
+                       	<small th:text="${hotKeyInfo.chinese}"></small>
+                       	<small th:if="${hotKeyInfo.totalClick >=1 &&hotKeyInfo.totalClick <10}">🔥</small>
+                       	<small th:if="${hotKeyInfo.totalClick >=10 &&hotKeyInfo.totalClick <50}">🔥🔥</small>
+                       	<small th:if="${hotKeyInfo.totalClick >=50 &&hotKeyInfo.totalClick <100}">🔥🔥🔥</small>
+                       	<small th:if="${hotKeyInfo.totalClick >=100 &&hotKeyInfo.totalClick <200}">🔥🔥🔥🔥</small>
+                       	<small th:if="${hotKeyInfo.totalClick >=200}">🔥🔥🔥🔥🔥</small>
+                 	</a>
+             	</div>
+            </div>
+        </div>
+	</div>
+       	<div class="row">
+	       	<div class="text-center">
+	    		<a th:if="${hotKeyInfoList.size()<32}" th:id="${hotKeyInfoList.size()}" onclick="javascript:showMoreHotTerms(this);return false;">查看更多热词</a>
+	    	</div>
+	    </div>
+	<!-- End Footer Area -->
+	<!-- <script type="text/javascript" th:src="@{/static/js/jquery-3.1.1.min.js}" src="../static/js/jquery-3.1.1.min.js"></script> -->
+	<!-- <script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script> -->
+	<script>
+		$('.file-box').each(function () {
+			animationHover(this, 'pulse');
+		 });
+    </script>
+</body>
+</html>

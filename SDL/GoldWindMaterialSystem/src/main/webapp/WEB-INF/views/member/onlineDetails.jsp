@@ -1,0 +1,93 @@
+<%@ include file="../common/header.jsp"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8" />
+<title>Session详情 — SSM + Shiro Demo</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+<link rel="icon" href="<%=basePath%>/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="<%=basePath%>/favicon.ico" />
+<link href="<%=basePath%>/js/common/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="<%=basePath%>/css/common/base.css" rel="stylesheet" />
+<script src="<%=basePath%>/js/common/jquery/jquery1.8.3.min.js"></script>
+<script src="<%=basePath%>/js/common/layer/layer.js"></script>
+<script src="<%=basePath%>/js/common/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body data-target="#one" data-spy="scroll">
+	<jsp:include page="../common/config/top.jsp"></jsp:include>
+	<div class="container" style="padding-bottom: 15px; min-height: 300px; margin-top: 40px;">
+		<div class="row">
+			<jsp:include page="../common/config/member.left.jsp"></jsp:include>
+			<div class="col-md-10 col-xs-10">
+				<h2>Session详情</h2>
+				<hr>
+				<table class="table table-bordered">
+					<tr>
+						<th>Session Id</th>
+						<td>${bo.sessionId}</td>
+					</tr>
+					<tr>
+						<th>Session创建时间</th>
+						<td>
+							<fmt:formatDate value="${bo.startTime}" pattern="yyyy年MM月dd日HH点mm分ss秒" />
+						</td>
+					</tr>
+					<tr>
+						<th>Session最后交互时间</th>
+						<td>
+							<fmt:formatDate value="${bo.lastAccess}" pattern="yyyy年MM月dd日HH点mm分ss秒" />
+						</td>
+					</tr>
+					<tr>
+						<th>Session 状态</th>
+						<c:choose>
+							<c:when test="${bo.sessionStatus}">
+								<td>有效</td>
+							</c:when>
+							<c:otherwise>
+								<td>已踢出</td>
+							</c:otherwise>
+						</c:choose>
+					</tr>
+					<tr>
+						<th>Session Host</th>
+						<td>${bo.host}</td>
+					</tr>
+					<tr>
+						<th>Session timeout</th>
+						<td>${bo.timeout}&nbsp;(毫秒)= ${bo.timeout/1000}(秒) = ${bo.timeout/1000/60}(分钟)</td>
+					</tr>
+					<tr>
+						<th>昵称</th>
+						<td>${bo.nickname}</td>
+					</tr>
+					<tr>
+						<th>Email/帐号</th>
+						<td>${bo.email}</td>
+					</tr>
+					<tr>
+						<th>创建时间</th>
+						<td>
+							<fmt:formatDate value="${bo.createTime}" pattern="yyyy年MM月dd日HH点mm分ss秒" />
+						</td>
+					</tr>
+					<tr>
+						<th>最后登录时间</th>
+						<td>
+							<fmt:formatDate value="${bo.lastLoginTime}" pattern="yyyy年MM月dd日HH点mm分ss秒" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function(){
+		  	$("#usersCenter").addClass("active");
+		  	$("#onlineuserlist").addClass("active");
+		});	
+	</script>
+</body>
+</html>

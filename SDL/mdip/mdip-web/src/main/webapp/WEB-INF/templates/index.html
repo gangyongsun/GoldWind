@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,must-revalidate" />
+<meta http-equiv="expires" content="0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="Shortcut Icon" href="/static/images/index.ico" th:href="@{/static/images/index.ico}" />
+
+<title>MDIP数据集成平台</title>
+<link rel="stylesheet" type="text/css" href="/static/css/sweetalert.css" th:href="@{/static/css/sweetalert.css}" />
+
+<!--dynamic table-->
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/js/advanced-datatable/css/demo_page.css" th:href="@{/static/plugin/bootstrap/js/advanced-datatable/css/demo_page.css}" />
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/js/advanced-datatable/css/demo_table.css" th:href="@{/static/plugin/bootstrap/js/advanced-datatable/css/demo_table.css}" />
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/js/data-tables/DT_bootstrap.css" th:href="@{/static/plugin/bootstrap/js/data-tables/DT_bootstrap.css}" />
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/css/style.css" th:href="@{/static/plugin/bootstrap/css/style.css}">
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/css/style-responsive.css" th:href="@{/static/plugin/bootstrap/css/style-responsive.css}">
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/css/bootstrap-select.min.css" th:href="@{/static/plugin/bootstrap/css/bootstrap-select.min.css}">
+<!--pickers datetimepicker plugin--->
+<link rel="stylesheet" type="text/css" href="/static/plugin/bootstrap/js/bootstrap-datetimepicker/css/datetimepicker-custom.css" th:href="@{/static/plugin/bootstrap/js/bootstrap-datetimepicker/css/datetimepicker-custom.css}" />
+</head>
+
+<body class="sticky-header">
+	<section>
+		<!-- left side start-->
+		<div th:replace="/lefter/lefter :: lefter"></div>
+		<!-- left side end-->
+
+		<!-- main content start-->
+		<div id="index-main-content"></div>
+		<form id="dashboardForm" th:action="@{/main/}"></form>
+		<form id="kettleForm" th:action="@{/kettle/}"></form>
+		<form id="joblogForm" th:action="@{/joblog/}"></form>
+		<form id="tableDataForm" th:action="@{/tableData/}"></form>
+		<!-- main content end-->
+
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width: 950px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="echartsTitle"></h4>
+					</div>
+					<div class="modal-body">
+						<div id="echarts" style="height: 400px;"></div>
+					</div>
+					<div class="modal-footer">
+						<button id="refreshButton" type="button" class="btn btn-primary">关闭自动刷新</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal">退出</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+	</section>
+	<!--common scripts for all pages-->
+	<script type="text/javascript" src="/static/js/sweetalert/sweetalert.min.js" th:src="@{/static/js/sweetalert/sweetalert.min.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/jquery-1.10.2.min.js" th:src="@{/static/plugin/bootstrap/js/jquery-1.10.2.min.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/jquery-ui-1.9.2.custom.min.js" th:src="@{/static/plugin/bootstrap/js/jquery-ui-1.9.2.custom.min.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/jquery-migrate-1.2.1.min.js" th:src="@{/static/plugin/bootstrap/js/jquery-migrate-1.2.1.min.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/jquery.form.js" th:src="@{/static/plugin/bootstrap/js/jquery.form.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/jquery.validate.min.js" th:src="@{/static/plugin/bootstrap/js/jquery.validate.min.js}"></script>
+	<script type="text/javascript" src="/stati/plugin/bootstrapc/js/bootstrap.min.js" th:src="@{/static/plugin/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/modernizr.min.js" th:src="@{/static/plugin/bootstrap/js/modernizr.min.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/jquery.nicescroll.js" th:src="@{/static/plugin/bootstrap/js/jquery.nicescroll.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/validation-init.js" th:src="@{/static/plugin/bootstrap/js/validation-init.js}"></script>
+
+	<!--pickers datetimepicker plugin and initialization--->
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" th:src="@{/static/plugin/bootstrap/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/pickers-init.js" th:src="@{/static/plugin/bootstrap/js/pickers-init.js}"></script>
+
+	<!--dynamic table and initialization-->
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/advanced-datatable/js/jquery.dataTables.js" th:src="@{/static/plugin/bootstrap/js/advanced-datatable/js/jquery.dataTables.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/data-tables/DT_bootstrap.js" th:src="@{/static/plugin/bootstrap/js/data-tables/DT_bootstrap.js}"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/dynamic_table_init.js" th:src="@{/static/plugin/bootstrap/js/dynamic_table_init.js}"></script>
+
+	<script type="text/javascript" src="/static/plugin/bootstrap/js/scripts.js" th:src="@{/static/plugin/bootstrap/js/scripts.js}"></script>
+
+	<!-- 通用js -->
+	<script src="/static/js/common/ajaxcommon.js" th:src="@{/static/js/common/ajaxcommon.js}"></script>
+	<!-- 导航设置active -->
+	<script type="text/javascript" src="/static/js/pageCssSetJS/pageCssSetter.js" th:src="@{/static/js/pageCssSetJS/pageCssSetter.js}"></script>
+	<!-- 作业监控 js -->
+	<script type="text/javascript" src="/static/js/job/jobLog.js" th:src="@{/static/js/job/jobLog.js}"></script>
+	<!-- 作业调度 js -->
+	<script type="text/javascript" src="/static/js/job/jobSchedule.js" th:src="@{/static/js/job/jobSchedule.js}"></script>
+
+	<!-- bootstrap-paginator分页插件 -->
+	<!--<script src="/static/plugin/bootstrap-paginator/bootstrap-paginator.min.js" th:src="@{/static/plugin/bootstrap-paginator/bootstrap-paginator.min.js}"></script>-->
+	<!-- 表数据 -->
+	<!-- <script type="text/javascript" src="/static/js/tabledata/tabledata.js" th:src="@{/static/js/tabledata/tabledata.js}"></script> -->
+
+	<!-- echarts -->
+	<script type="text/javascript" src="/static/js/echarts/echarts.min.js" th:src="@{/static/js/echarts/echarts.min.js}"></script>
+</body>
+</html>

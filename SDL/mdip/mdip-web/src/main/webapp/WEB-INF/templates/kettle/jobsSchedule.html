@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<div class="panel-body" th:fragment="jobsSchedule">
+		<div class="adv-table" th:fragment="table-data">
+			<table class="display table table-bordered" id="dynamic-table">
+				<thead>
+					<tr style="background-color: #424F63; color: #ffffff">
+						<th>
+							<input type="checkbox" id="SelectAll" onclick="selectAll();">
+						</th>
+						<th hidden="hidden">作业编码</th>
+						<th>作业名称</th>
+						<th>作业描述</th>
+						<th>作业类型</th>
+						<th>运行状态</th>
+						<th>开始时间</th>
+						<th>结束时间</th>
+						<th>备注</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="job,iterStat : ${jobList}">
+						<td>
+							<input type="hidden" th:id="${job.id}" th:value="${job.jobFileDir}">
+							<input type="checkbox" id="subcheck" name="checkbox" onclick="setSelectAll();">
+						</td>
+						<td hidden="hidden" th:text="${job.id}">001</td>
+						<td th:text="${job.jobName}">jobName</td>
+						<td th:text="${job.jobDescription}">description</td>
+						<td th:switch="${job.jobType}">
+							<span th:case="1">文件</span>
+							<span th:case="2">数据库</span>
+							<span th:case="12">文件+数据库</span>
+							<span th:case="3">二进制文件</span>
+							<span th:case="4">流文件</span>
+						</td>
+						<th th:text="初始化中" th:if="${job.runStatus}=='Initializing'" class="info text-center">初始化中</th>
+						<th th:text="准备执行中" th:if="${job.runStatus}=='Preparing executing'" class="info text-center">准备执行中</th>
+						<th th:text="暂停的" th:if="${job.runStatus}=='Paused'" class="info text-center">暂停的</th>
+						<th th:text="完成的(有错)" th:if="${job.runStatus}=='Finished (with errors)'" class="info text-center">完成的(有错)</th>
+						<th th:text="启动中" th:if="${job.runStatus}=='Waiting'" class="info text-center">启动中</th>
+						<th th:text="停止中" th:if="${job.runStatus}=='Halting'" class="info text-center">停止中</th>
+						<th th:text="停止的" th:if="${job.runStatus}=='Stopped'" class="warning text-center text-info">停止的</th>
+						<th th:text="运行中" th:if="${job.runStatus}=='Running'" class="success text-center text-danger">运行中</th>
+						<th th:text="已完成" th:if="${job.runStatus}=='Finished'" class="info text-center">已完成</th>
+						<td th:text="${job.startTime}==null?'---':${job.startTime}">2017-7-29 00:00:00</td>
+						<td th:text="${job.endTime}==null?'---':${job.endTime}">2017-7-29 11:11:11</td>
+						<td th:text="${job.remarks}">remarks</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

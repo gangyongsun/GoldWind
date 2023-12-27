@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMS - 时间轴</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="wrapper wrapper-content">
+                <div class="row animated fadeInRight">
+                    <div class="col-sm-12">
+                        <div class="ibox float-e-margins">
+                            <div class="text-center float-e-margins p-md">
+                                <span>预览：</span>
+                                <a href="#" class="btn btn-xs btn-primary" id="lightVersion">浅色</a>
+                                <a href="#" class="btn btn-xs btn-primary" id="darkVersion">深色</a>
+                                <a href="#" class="btn btn-xs btn-primary" id="leftVersion">布局切换</a>
+                            </div>
+                            <div class="" id="ibox-content">
+                                <div id="vertical-timeline" class="vertical-container light-timeline">
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon navy-bg">
+                                            <i class="fa fa-briefcase"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：TEP人员反馈报价</h2>
+                                            <p>TEP公司AAA进行项目报价</p>
+                                            <a href="#" class="btn btn-sm btn-primary"> 更多信息</a>
+                                            <span class="vertical-date"> 今天 <br> <small>2019年8月2日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon blue-bg">
+                                            <i class="fa fa-file-text"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：前处理文件检查</h2>
+                                            <p>燕玉鑫（PM）下载前处理文件，并检查</p>
+                                            <a href="#" class="btn btn-sm btn-success"> 下载文档 </a>
+                                            <span class="vertical-date"> 今天 <br><small>2019年8月2日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon lazur-bg">
+                                            <i class="fa fa-coffee"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：文件前处理</h2>
+                                            <p>崔洪建（Eng）下载预处理文件，进行前处理，提交前处理文件</p>
+                                            <a href="#" class="btn btn-sm btn-info">更多</a>
+                                            <span class="vertical-date"> 昨天 <br><small>2019年8月1日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon yellow-bg">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：源文件预处理</h2>
+                                            <p>燕玉鑫（PM）下载源文件，预处理，提交预处理文件</p>
+                                            <span class="vertical-date">昨天 <br><small>2019年8月1日</small></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="vertical-timeline-block">
+                                        <div class="vertical-timeline-icon lazur-bg">
+                                            <i class="fa fa-user-md"></i>
+                                        </div>
+
+                                        <div class="vertical-timeline-content">
+                                            <h2>HA100088812项目：源文件提交</h2>
+                                            <p>张翼（PM）提交源文件</p>
+                                            <span class="vertical-date">前天 <br><small>2019年7月30日</small></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+    <script>
+        $(document).ready(function () {
+            // Local script for demo purpose only
+            $('#lightVersion').click(function (event) {
+                event.preventDefault()
+                $('#ibox-content').removeClass('ibox-content');
+                $('#vertical-timeline').removeClass('dark-timeline');
+                $('#vertical-timeline').addClass('light-timeline');
+            });
+
+            $('#darkVersion').click(function (event) {
+                event.preventDefault()
+                $('#ibox-content').addClass('ibox-content');
+                $('#vertical-timeline').removeClass('light-timeline');
+                $('#vertical-timeline').addClass('dark-timeline');
+            });
+
+            $('#leftVersion').click(function (event) {
+                event.preventDefault()
+                $('#vertical-timeline').toggleClass('center-orientation');
+            });
+        });
+    </script>
+</body>
+</html>

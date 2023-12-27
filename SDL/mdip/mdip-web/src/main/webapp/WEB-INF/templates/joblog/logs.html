@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- main content start-->
+	<div class="main-content" th:fragment="joblogs-main-content">
+		<!-- header section start-->
+		<div th:replace="/header/header :: header"></div>
+		<!-- header section end-->
+
+		<!-- log search start-->
+		<div th:replace="/joblog/logsSearch :: logsSearch"></div>
+		<!-- og search end-->
+
+		<!--body wrapper start-->
+		<div class="wrapper" style="padding: 0px; margin-bottom: 0px">
+			<form id="jobLogForm" th:action="@{/joblog/}">
+				<div class="row">
+					<div class="col-md-12">
+						<section class="panel">
+							<div th:replace="/joblog/logsdata :: logsdata"></div>
+						</section>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!--body wrapper end-->
+
+		<!-- job log echarts Modal start-->
+		<div th:replace="/joblog/jobLogEcharts :: jobLogEchartsFragment"></div>
+		<!-- job log echarts Modal end-->
+
+		<!--footer section start-->
+		<footer th:replace="/footer/footer::copyright"></footer>
+		<!--footer section end-->
+	</div>
+	<!-- main content end-->
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://shiro.apache.org/tags">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>System主页</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link rel="shortcut icon" href="favicon.ico">
+	<link href="../static/css/bootstrap.min.css" th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
+	<link href="../static/css/font-awesome.css" th:href="@{/static/css/font-awesome.css}" rel="stylesheet">
+	<link href="../static/css/animate.css" th:href="@{/static/css/animate.css}" rel="stylesheet">
+	<link href="../static/css/style.css" th:href="@{/static/css/style.css}" rel="stylesheet">
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+    <div id="wrapper">
+        <!--左侧导航开始-->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="nav-close"><i class="fa fa-times-circle"></i>
+            </div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="/system/main">
+                                <span class="clear">
+                                    <span class="block m-t-xs" style="font-size:20px;">
+                                        <i class="fa fa-area-chart"></i>
+                                        <strong class="font-bold">KIS</strong>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="logo-element">
+                        	<span class="clear">
+                                <span class="block m-t-xs" style="font-size:20px;">
+                                    <i class="fa fa-area-chart"></i>
+                                    <strong class="font-bold">KIS</strong>
+                                </span>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                        <span class="ng-scope">Dashboard</span>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="/system/main"><i class="fa fa-home"></i><span class="nav-label">主页</span></a>
+                    </li>
+                    <li class="line dk"></li>
+                    <shiro:hasPermission name="system/management">
+	                    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs"><span class="ng-scope">系统管理</span></li>
+	                    <shiro:hasPermission name="user/management">
+		                    <li>
+		                        <a href="#"><i class="fa fa-edit"></i><span class="nav-label">用户管理</span><span class="fa arrow"></span> </a>
+		                        <ul class="nav nav-second-level">
+		                        	<shiro:hasPermission name="user/list">
+		                            	<li><a class="J_menuItem" href="/member/list">用户列表</a></li>
+		                            </shiro:hasPermission>
+		                        	<shiro:hasPermission name="user/onlinelist">
+		                            	<li><a class="J_menuItem" href="/member/online">在线用户</a></li>
+		                            </shiro:hasPermission>
+		                        </ul>
+		                    </li>
+	                    </shiro:hasPermission>
+	                    <shiro:hasPermission name="privilege/management">
+		                    <li>
+		                        <a href="#"><i class="fa fa-desktop"></i><span class="nav-label">权限管理</span><span class="fa arrow"></span></a>
+		                        <ul class="nav nav-second-level">
+				                    <shiro:hasPermission name="role/list">
+		                            	<li><a class="J_menuItem" href="/role/index">角色列表</a></li>
+		                            </shiro:hasPermission>
+				                    <shiro:hasPermission name="role/roleallocationlist">
+		                            	<li><a class="J_menuItem" href="/role/allocation">角色分配</a></li>
+		                            </shiro:hasPermission>
+				                    <shiro:hasPermission name="resource/list">
+		                            	<li><a class="J_menuItem" href="/resource/index">权限列表</a></li>
+		                            </shiro:hasPermission>
+				                    <shiro:hasPermission name="resource/resourceallocationlist">
+		                            	<li><a class="J_menuItem" href="/resource/allocation">权限分配</a></li>
+		                            </shiro:hasPermission>
+		                        </ul>
+		                    </li>
+	                    </shiro:hasPermission>
+                    </shiro:hasPermission>
+                    <li class="line dk"></li>
+                    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs"><span class="ng-scope">系统应用</span></li>
+                    <li>
+                        <a href="#">
+                        <i class="fa fa-picture-o"></i>
+                        <span class="nav-label">KIS系统监控</span>
+                        <span class="fa arrow"></span></a>
+                        <shiro:hasPermission name="file/upload">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/file/index">文件上传</a></li>
+	                        </ul>
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="nonsearchtermlist">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/noneSearchIndex">未收录搜索记录</a></li>
+	                        </ul>
+                       	</shiro:hasPermission>
+                       <shiro:hasPermission name="webResponse">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">建议反馈记录</a></li>
+	                        </ul>
+                     </shiro:hasPermission>
+                      <!--  <shiro:hasPermission name="kisAccessLog">  -->
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">网站访问记录</a></li>
+	                        </ul>
+                    <!-- </shiro:hasPermission>
+                          <shiro:hasPermission name="termScanLog"> 
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">术语浏览记录</a></li>
+	                        </ul>
+                      </shiro:hasPermission>
+                       <shiro:hasPermission name="termSearchLog">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">术语搜索记录</a></li>
+	                        </ul>
+                      </shiro:hasPermission>
+                       <shiro:hasPermission name="termDetailLog">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">术语点击记录</a></li>
+	                        </ul>
+                        </shiro:hasPermission> -->
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!--左侧导航结束-->
+        <!--右侧部分开始-->
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-info " href="#">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                       <!--  <form role="search" class="navbar-form-custom" method="post" action="search_results.html">
+                            <div class="form-group">
+                                <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">
+                            </div>
+                        </form> -->
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                    	<li class="dropdown">
+                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-messages">
+                                <li class="m-t-xs">
+                                    <div class="dropdown-messages-box">
+                                        <a href="profile.html" class="pull-left">
+                                            <img alt="image" class="img-circle" src="../static/img/a7.jpg">
+                                        </a>
+                                        <div class="media-body">
+                                            <small class="pull-right">46小时前</small>
+                                            <strong>小四</strong> 是不是只有我死了,你们才不骂爵迹
+                                            <br>
+                                            <small class="text-muted">3天前 2014.11.8</small>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <div class="dropdown-messages-box">
+                                        <a href="profile.html" class="pull-left">
+                                            <img alt="image" class="img-circle" src="../static/img/a4.jpg">
+                                        </a>
+                                        <div class="media-body ">
+                                            <small class="pull-right text-navy">25小时前</small>
+                                            <strong>二愣子</strong> 呵呵
+                                            <br>
+                                            <small class="text-muted">昨天</small>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <div class="text-center link-block">
+                                        <a class="J_menuItem" href="mailbox.html">
+                                            <i class="fa fa-envelope"></i> <strong> 查看所有消息</strong>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    	<li class="dropdown">
+                            <a href="/auth/logout"><span class="glyphicon glyphicon-log-out"></span> Log-out</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="row J_mainContent" id="content-main">
+                <iframe id="J_iframe" width="100%" height="100%" src="/system/main" data-id="main" seamless></iframe>
+            </div>
+        </div>
+        <!--右侧部分结束-->
+    </div>
+	<script src="../static/js/jquery-2.0.3.min.js" th:src="@{/static/js/jquery-2.0.3.min.js}" type="text/javascript"></script>
+	<script src="../static/js/bootstrap.min.js" th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
+	<script src="../static/js/plugins/metisMenu/jquery.metisMenu.js" th:src="@{/static/js/plugins/metisMenu/jquery.metisMenu.js}" type="text/javascript"></script>
+	<script src="../static/js/plugins/slimscroll/jquery.slimscroll.min.js" th:src="@{/static/js/plugins/slimscroll/jquery.slimscroll.min.js}" type="text/javascript"></script>
+	<script src="../static/js/plugins/layer/layer.min.js" th:src="@{/static/js/plugins/layer/layer.min.js}" type="text/javascript"></script>
+	<script src="../static/js/hAdmin.js" th:src="@{/static/js/hAdmin.js}" type="text/javascript"></script>
+	<script src="../static/js/index.js"th:src="@{/static/js/index.js}" type="text/javascript"></script>
+	<script src="../static/js/plugins/pace/pace.min.js" th:src="@{/static/js/plugins/pace/pace.min.js}" type="text/javascript"></script>
+</body>
+</html>

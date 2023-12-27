@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.goldwind.kis.shiro.dao.SysResourcesMapper">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.shiro.domain.SysResources">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="resource_name" property="resourceName" jdbcType="VARCHAR" />
+		<result column="resource_url" property="resourceUrl" jdbcType="VARCHAR" />
+		<result column="resource_type" property="resourceType" jdbcType="INTEGER" />
+		<result column="parent_id" property="parentId" jdbcType="INTEGER" />
+		<result column="resource_sort" property="resourceSort" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, resource_name, resource_url,resource_type,parent_id,resource_sort
+	</sql>
+	<sql id="limit_sql">
+		<if test="page_sql != null and page_sql != ''">
+			${page_sql}
+		</if>
+	</sql>
+
+	<sql id="where_all">
+		<where>
+			<if test="findContent != null and findContent !='' ">
+				and (
+				LOWER(resource_name) like LOWER(CONCAT("%",#{findContent,jdbcType=VARCHAR},"%")) or
+				LOWER(resource_url) like LOWER(CONCAT("%",#{findContent,jdbcType=VARCHAR},"%"))
+				)
+			</if>
+		</where>
+	</sql>
+	
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_resources
+		<include refid="where_all" />
+		<include refid="limit_sql" />
+	</select>
+	<select id="findCount" resultMap="BaseResultMap">
+		select count(id) from sys_resources
+		<include refid="where_all" />
+	</select>
+	
+	<!-- 根据角色获取权限，marker:0,没有权限，marker：非0(和up.id)一致表示有权限。 cn.com.goldwind.kis.shiro.bo.SysResourcesBo中的这个方法是校验权限 public boolean isCheck(){ return StringUtils.equals(roleId,marker); } -->
+	<select id="findResourceByRoleId" resultType="cn.com.goldwind.kis.shiro.bo.SysResourcesBo">
+		select sysRoleResource.role_id roleId,
+			sysResource.id,
+			sysResource.resource_name resourceName,
+			sysResource.resource_url resourceUrl,
+			sysResource.resource_type resourceType,
+			sysResource.parent_id parentId,
+			sysResource.resource_sort resourceSort,
+			ifnull(sysRoleResource.role_id,0)marker from sys_resources sysResource 
+		left join (select * from sys_role_resources  where role_id = #{id,jdbcType=BIGINT}) sysRoleResource 
+		on sysRoleResource.resources_id = sysResource.id
+		order by sysResource.id 
+	</select>
+	<!-- 根据用ID查询权限 -->
+	<select id="findResourceNameByUserId" resultType="java.lang.String">
+		select 
+			sysResource.resource_url 
+		from sys_resources sysResource , sys_role_resources sysRoleResource, sys_user_role sysUserRole
+		where user_id =#{id,jdbcType=BIGINT} 
+			and sysResource.id = sysRoleResource.resources_id 
+			and sysRoleResource.role_id = sysUserRole.role_id
+	</select>
+</mapper>

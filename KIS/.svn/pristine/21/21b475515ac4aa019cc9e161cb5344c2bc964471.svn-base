@@ -1,0 +1,238 @@
+package cn.com.goldwind.kis.web;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import cn.com.goldwind.kis.bo.DailyAccessBo;
+import cn.com.goldwind.kis.bo.DeptNameBo;
+import cn.com.goldwind.kis.bo.UserNameBo;
+import cn.com.goldwind.kis.entity.ClickLog;
+import cn.com.goldwind.kis.entity.SearchLog;
+import cn.com.goldwind.kis.entity.TermTypeBrowseLog;
+import cn.com.goldwind.kis.entity.WebAccessLog;
+import cn.com.goldwind.kis.entity.WebResponse;
+import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
+import cn.com.goldwind.kis.service.ClickLogService;
+import cn.com.goldwind.kis.service.DepNameDescListService;
+import cn.com.goldwind.kis.service.EmpDescListService;
+import cn.com.goldwind.kis.service.SearchLogService;
+import cn.com.goldwind.kis.service.TermTypeBrowseLogService;
+import cn.com.goldwind.kis.service.WebAccessLogService;
+import cn.com.goldwind.kis.service.WebResponseService;
+
+@Controller
+@RequestMapping("/console")
+public class ConsoleController {
+
+	@Autowired
+	private WebResponseService webResponseService;
+
+	@Autowired
+	private ClickLogService clickLogService;
+
+	@Autowired
+	private SearchLogService searchLogService;
+
+	@Autowired
+	private TermTypeBrowseLogService termTypeBrowseLogService;
+
+	@Autowired
+	private WebAccessLogService webAccessLogService;
+
+	@Autowired
+	private DepNameDescListService depNameDescListService;
+
+	@Autowired
+	private EmpDescListService empDescListService;
+
+	/**
+	 * 匹配搜索列表Index初始页面
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "searchLogIndex")
+	public ModelAndView searchLogIndex(ModelMap map) {
+		return new ModelAndView("console/noneSearch");
+	}
+
+	/**
+	 * webResponseIndex初始页面
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "webResponseIndex")
+	public ModelAndView webResponseIndex(ModelMap map) {
+		return new ModelAndView("console/webResponse");
+	}
+
+	/**
+	 * accessData初始页面
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "accessData")
+	public ModelAndView accessData(ModelMap map) {
+		return new ModelAndView("console/accessData");
+	}
+
+	/**
+	 * monitor初始页面
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "monitorIndex")
+	public ModelAndView monitorIndex(ModelMap map) {
+		return new ModelAndView("console/monitorIndex");
+	}
+
+	/**
+	 * 匹配搜索记录列表
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "searchLogList")
+	@ResponseBody
+	public TableSplitResult<SearchLog> searchLogList(ModelMap map, String findContent, Integer pageSize, Integer pageNumber) {
+		map.put("isAccurate", 0);//无匹配
+		map.put("findContent", findContent);
+		TableSplitResult<SearchLog> page = searchLogService.findPage(map, pageNumber, pageSize);
+		return page;
+	}
+	
+	/**
+	 * 部门访问人数列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "depNameDescList")
+	@ResponseBody
+	public List<DeptNameBo> depNameDescList() {
+		List<DeptNameBo> deptNameBoList = depNameDescListService.findDepNameDescList();
+		return deptNameBoList;
+	}
+	
+	/**
+	 * 部门访问人数排序
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "depNameDescPage")
+	@ResponseBody
+	public TableSplitResult<DeptNameBo> depNameDescPage(ModelMap map, Integer pageSize, Integer pageNumber) {
+		TableSplitResult<DeptNameBo> page = depNameDescListService.findPage(map, pageNumber, pageSize);
+		return page;
+	}
+
+	/**
+	 * 用户访问次数列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "empDescList")
+	@ResponseBody
+	public List<UserNameBo> empDescList() {
+		List<UserNameBo> userNameBoList = empDescListService.findDepNameDescList();
+		return userNameBoList;
+	}
+	
+	/**
+	 * 用户访问次数排序
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "empDescPage")
+	@ResponseBody
+	public TableSplitResult<UserNameBo> empDescPage(ModelMap map, Integer pageSize, Integer pageNumber) {
+		TableSplitResult<UserNameBo> page = empDescListService.findPage(map, pageNumber, pageSize);
+		return page;
+	}
+
+	/**
+	 * 查询近30天每天的访问次数和人数
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "dailyAccessBoList")
+	@ResponseBody
+	public List<DailyAccessBo> dailyAccessBoList() {
+		List<DailyAccessBo> dailyAccessBoList = webAccessLogService.getDailyAccessBoList(30);
+		return dailyAccessBoList;
+	}
+
+	/**
+	 * 用户反馈列表
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "webResponseList")
+	@ResponseBody
+	public TableSplitResult<WebResponse> webResponseList(ModelMap map, String findContent, Integer pageSize, Integer pageNumber) {
+		map.put("findContent", findContent);
+		TableSplitResult<WebResponse> page = webResponseService.findWebResponseListPage(map, pageNumber, pageSize);
+		return page;
+	}
+
+	/**
+	 * bootstrap table分页查询
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "clickLogList")
+	@ResponseBody
+	public TableSplitResult<ClickLog> clickLogList(ModelMap map, Integer pageSize, Integer pageNumber) {
+		TableSplitResult<ClickLog> page = clickLogService.findPage(map, pageNumber, pageSize);
+		return page;
+	}
+
+	
+
+	/**
+	 * bootstrap table分页查询
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "termTypeBrowseLogList")
+	@ResponseBody
+	public TableSplitResult<TermTypeBrowseLog> termTypeBrowseLogList(ModelMap map, String termType, Integer pageSize, Integer pageNumber) {
+		map.put("termTypeCondition", termType);
+		TableSplitResult<TermTypeBrowseLog> page = termTypeBrowseLogService.findPage(map, pageNumber, pageSize);
+		return page;
+	}
+
+	/**
+	 * bootstrap table分页查询
+	 * 
+	 * @param pageNumber 参数名必须为这个才能接收到bootstrap table传的参数
+	 * @param pageSize   参数名必须为这个才能接收到bootstrap table传的参数
+	 * @return
+	 */
+	@RequestMapping(value = "webAccessLogList")
+	@ResponseBody
+	public TableSplitResult<WebAccessLog> webAccessLogList(ModelMap map, Integer pageSize, Integer pageNumber) {
+		TableSplitResult<WebAccessLog> page = webAccessLogService.findPage(map, pageNumber, pageSize);
+		return page;
+	}
+
+}

@@ -1,0 +1,46 @@
+function praise(operateValue) {
+	
+	termOperate(getTermId(), "praise", getOperateValue());
+}
+
+function trample(operateValue) {
+	termOperate(getTermId(), "trample", getOperateValue());
+}
+
+function collect(operateValue) {
+	termOperate(getTermId(), "collect", getOperateValue());
+}
+
+function getTermId() {
+	return $("#hiddenTermId").val();
+}
+
+function getOperateValue(operateValue){
+	if (operateValue == true) {
+		operateValue = false;
+	} else {
+		operateValue = true;
+	}
+	return operateValue;
+}
+
+function termOperate(termId, operateType, operateValue) {
+	$.ajax({
+		type : "POST",
+		url : '/kis/termOperate',
+		data : {
+			termId : termId,
+			operateType : operateType,
+			operateValue : operateValue
+		},
+		success : function(data) {
+			console.log(data);
+			// if(data.status==200){
+			// console.log($("#"+operateType).css());
+			// }
+		},
+		error : function(data) {
+			console.log("操作传输失败！");
+		}
+	});
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header" th:fragment="work">
+	<div class="dropdown-menu dropdown-menu-head pull-right">
+		<h5 class="title">你有8项延迟的工作</h5>
+		<ul class="dropdown-list user-list">
+			<li class="new">
+				<a href="#">
+					<div class="task-info">
+						<div>工作A</div>
+						<div class="progress progress-striped">
+							<div style="width: 40%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" role="progressbar" class="progress-bar progress-bar-warning">
+								<span class="">40%</span>
+							</div>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li class="new">
+				<a href="#">
+					<div class="task-info">
+						<div>工作B</div>
+					</div>
+					<div class="progress progress-striped">
+						<div style="width: 90%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="90" role="progressbar" class="progress-bar progress-bar-success">
+							<span class="">90%</span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="task-info">
+						<div>工作C</div>
+					</div>
+					<div class="progress progress-striped">
+						<div style="width: 66%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="66" role="progressbar" class="progress-bar progress-bar-info">
+							<span class="">66% </span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="task-info">
+						<div>工作D</div>
+					</div>
+					<div class="progress progress-striped">
+						<div style="width: 33%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="33" role="progressbar" class="progress-bar progress-bar-danger">
+							<span class="">33% </span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="task-info">
+						<div>工作E</div>
+					</div>
+					<div class="progress progress-striped">
+						<div style="width: 80%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="80" role="progressbar" class="progress-bar">
+							<span class="">80% </span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li class="new">
+				<a href="">查看所有延迟的工作</a>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>

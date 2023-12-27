@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<div class="panel-body" th:fragment="logsdata">
+		<div class="adv-table">
+			<table class="display table table-bordered" id="dynamic-table">
+				<thead>
+					<tr style="background-color: #424F63; color: #ffffff"
+						align="center">
+						<th hidden="hidden">日志编码</th>
+						<th>作业名称</th>
+						<th>处理文件</th>
+						<th>处理成功</th>
+						<th>处理失败</th>
+						<th>实时总数</th>
+						<th>实时移入</th>
+						<th>实时移出</th>
+						<th>历史总数</th>
+						<th>历史移入</th>
+						<th>历史移出</th>
+						<th>开始时间</th>
+						<th>结束时间</th>
+						<th>运行状态</th>
+						<th>日志文件</th>
+					</tr>
+				</thead>
+				<tbody th:fragment="table-data">
+					<tr th:each="log : ${logList}">
+						<td hidden="hidden" th:value="${log.id}">001</td>
+						<td th:text="${log.jobName}" th:value="${log.id}"
+							style="cursor: pointer; text-decoration: underline;">abcd</td>
+						<td th:text="${log.readFilesNum}">0</td>
+						<td th:text="${log.successFilesNum}">0</td>
+						<td th:text="${log.failFilesNum}">0</td>
+
+						<td th:text="${log.realSum}">0</td>
+						<td th:text="${log.realInCount}">0</td>
+						<td th:text="${log.realOutCount}">0</td>
+
+						<td th:text="${log.historySum}">0</td>
+						<td th:text="${log.historyInCount}">0</td>
+						<td th:text="${log.historyOutCount}">0</td>
+
+						<td th:text="${log.startTime}"></td>
+						<td th:text="${log.endTime}"></td>
+
+						<th th:text="启动中" th:if="${log.jobStatus}=='Initializing'"
+							class="info text-center">初始化中</th>
+						<th th:text="启动中" th:if="${log.jobStatus}=='Preparing executing'"
+							class="info text-center">准备执行中</th>
+						<th th:text="启动中" th:if="${log.jobStatus}=='Paused'"
+							class="info text-center">暂停的</th>
+						<th th:text="启动中"
+							th:if="${log.jobStatus}=='Finished (with errors)'"
+							class="info text-center">完成的(有错)</th>
+						<th th:text="启动中" th:if="${log.jobStatus}=='Waiting'"
+							class="info text-center">启动中</th>
+						<th th:text="停止中" th:if="${log.jobStatus}=='Halting'"
+							class="info text-center">停止中</th>
+						<th th:text="停止的" th:if="${log.jobStatus}=='Stopped'"
+							class="warning text-center text-info">停止的</th>
+						<th th:text="运行中" th:if="${log.jobStatus}=='Running'"
+							class="success text-center text-danger">运行中</th>
+						<th th:text="已完成" th:if="${log.jobStatus}=='Finished'"
+							class="info text-center">已完成</th>
+
+						<td class="center"><a
+							th:href="@{/joblog/downloadLogs(logId=${log.id})}"
+							class="btn btn-info btn-xs">下载</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>	
+</body>
+</html>

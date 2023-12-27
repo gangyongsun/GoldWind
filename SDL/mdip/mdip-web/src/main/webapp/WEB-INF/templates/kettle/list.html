@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- main content start-->
+	<div class="main-content" th:fragment="joblist-main-content">
+		<!-- header section start-->
+		<div th:replace="/header/header :: header"></div>
+		<!-- header section end-->
+
+		<!-- page heading start-->
+		<div th:replace="/kettle/jobsScheduleSearch :: jobsScheduleSearch"></div>
+		<!-- page heading end-->
+
+		<div class="wrapper" style="padding: 0px; margin-bottom: 0px">
+			<form id="kettleForm" th:action="@{/kettle/}">
+				<div class="row">
+					<div class="col-md-12">
+						<section class="panel">
+							<!-- button header start -->
+							<header th:replace="/kettle/buttonHeader :: buttonHeader"></header>
+							<!-- button header end -->
+
+							<!-- data table start -->
+							<div th:replace="/kettle/jobsSchedule :: jobsSchedule"></div>
+							<!-- data table end -->
+						</section>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- job info modify Modal start-->
+		<div th:replace="/kettle/jobInfoModify :: jobInfoModify"></div>
+		<!-- job  info modify Modal end-->
+
+		<!-- job import Modal start-->
+		<div th:replace="/kettle/jobImport :: jobImport"></div>
+		<!-- job import Modal end-->
+
+		<!-- param set start -->
+		<div th:replace="/kettle/paramSet :: paramSet"></div>
+		<!-- param set end -->
+
+		<!--footer section start-->
+		<footer th:replace="/footer/footer::copyright"></footer>
+		<!--footer section end-->
+	</div>
+	<!-- main content end-->
+</body>
+</html>

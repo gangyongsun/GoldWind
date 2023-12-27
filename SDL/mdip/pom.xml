@@ -1,0 +1,223 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.lantrack</groupId>
+	<artifactId>mdip</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>mdip</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- jdk -->
+		<java.version>1.8</java.version>
+		<java.source.version>1.8</java.source.version>
+		<java.target.version>1.8</java.target.version>
+		<java.encoding>UTF-8</java.encoding>
+
+		<!-- apache commons -->
+		<commons-logging.version>1.2</commons-logging.version>
+		<commons-io.version>2.5</commons-io.version>
+
+		<!-- mysql -->
+		<mysql-connector-java.version>5.1.41</mysql-connector-java.version>
+		<!-- druid -->
+		<druid.version>1.1.0</druid.version>
+		<!-- sqlserver
+		<mssql-jdbc.version>6.1.0.jre8</mssql-jdbc.version>
+		<jtds.version>1.2.4</jtds.version>
+ 		-->
+		<!-- logback 开源log组件 -->
+		<logback.version>1.2.3</logback.version>
+		<logback-ext-spring.version>0.1.4</logback-ext-spring.version>
+		<slf4j.version>1.7.25</slf4j.version>
+
+		<!-- junit -->
+		<junit.version>4.12</junit.version>
+
+		<!-- guava -->
+		<guava.version>19.0</guava.version>
+
+		<!-- lombok -->
+		<lombok.version>1.16.16</lombok.version>
+
+		<!-- json-simple -->
+		<json-simple.version>1.1.1</json-simple.version>
+		
+		<!-- apache commons -->
+		<commons-lang3.verison>3.6</commons-lang3.verison>
+
+		<!-- maven plugin -->
+		<maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+		<maven-bundle-plugin.version>3.3.0</maven-bundle-plugin.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- common start -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-logging.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+		<!-- common end -->
+
+		<!--junit start -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!--junit end -->
+
+		<!--guava start -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<!--guava end -->
+
+		<!--lombok start -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--lombok end -->
+
+		<!--logback start -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.logback-extensions</groupId>
+			<artifactId>logback-ext-spring</artifactId>
+			<version>${logback-ext-spring.version}</version>
+		</dependency>
+		<!--logback end -->
+
+		<!-- mysql start -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java.version}</version>
+		</dependency>
+		<!-- mysql end -->
+		
+		<!-- sqlserver
+		<dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>${mssql-jdbc.version}</version>
+        </dependency>        
+		<dependency>
+		    <groupId>net.sourceforge.jtds</groupId>
+		    <artifactId>jtds</artifactId>
+		    <version>${jtds.version}</version>
+		</dependency>
+		-->
+        
+
+		<!-- druid start -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		<!-- druid end -->
+
+		<!-- json-simple start -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>${json-simple.version}</version>
+		</dependency>
+		<!-- json-simple end -->
+		
+		<!-- common begin -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.verison}</version>
+		</dependency>
+		<!-- common end -->
+		
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.10</version>
+</dependency>
+
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-vfs2</artifactId>
+    <version>2.0</version>
+</dependency>
+
+
+
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>${java.source.version}</source>
+						<target>${java.target.version}</target>
+						<encoding>${java.encoding}</encoding>
+						<!-- <compilerArgs> 
+							<arg>-verbose</arg>
+							<arg>-Xlint:unchecked</arg>
+							<arg>-Xlint:deprecation</arg>
+							<arg>-bootclasspath</arg>
+							<arg>${env.JAVA_HOME}/jre/lib/rt.jar</arg>
+							<arg>-extdirs</arg> 
+							<arg>${project.basedir}/src/main/webapp/WEB-INF/lib</arg>
+						</compilerArgs> -->
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<modules>
+		<module>mdip-common</module>
+		<module>mdip-web</module>
+	</modules>
+</project>

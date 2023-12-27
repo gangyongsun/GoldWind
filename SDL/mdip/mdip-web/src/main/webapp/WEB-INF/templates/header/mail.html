@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<div class="dropdown-menu dropdown-menu-head pull-right" th:fragment="mail">
+		<h5 class="title">你有2封邮件</h5>
+		<ul class="dropdown-list normal-list">
+			<li class="new">
+				<a href="">
+					<span class="thumb">
+						<img src="/static/images/photos/user1.png" alt="" th:src="@{/static/images/photos/user1.png}" />
+					</span>
+					<span class="desc">
+						<span class="name">
+							李四
+							<span class="badge badge-success">new</span>
+						</span>
+						<span class="msg">邮件测试1...</span>
+					</span>
+				</a>
+			</li>
+			<li>
+				<a href="">
+					<span class="thumb">
+						<img src="/static/images/photos/user2.png" alt="" th:src="@{/static/images/photos/user2.png}" />
+					</span>
+					<span class="desc">
+						<span class="name">王五</span>
+						<span class="msg">邮件测试2...</span>
+					</span>
+				</a>
+			</li>
+			<li class="new">
+				<a href="">读取所有邮件</a>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>

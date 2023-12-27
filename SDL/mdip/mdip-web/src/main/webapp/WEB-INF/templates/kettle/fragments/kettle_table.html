@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<div class="adv-table" id="paramSetDiv" th:fragment="table-params" style="overflow-x: auto; overflow-y: auto; height: 600px; width: 560px;">
+		<table class="display table table-bordered table-condensed table-hover" id="loadParamsTable">
+			<thead>
+				<tr>
+					<th>参数名</th>
+					<th>参数值</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="entry,iterStat : ${entrys}">
+					<td th:text="${entry.key}">001</td>
+					<td>
+						<input type="text" th:id="${entry.key}" class="form-control" th:value="${entry.value}">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- 这里的id一定要有，否则被替换后id就没了，选择其他记录就无法进行$('#propModifyDiv').replaceWith(data); -->
+	<div class="adv-table" id="propModifyDiv" th:fragment="table-props">
+		<table class="display table table-bordered table-condensed table-hover" id="loadPropsTable">
+			<tbody>
+				<tr>
+					<td>作业名称</td>
+					<td th:text="${jobEntity.jobName}">
+						<input type="hidden" id="jobId" class="form-control" th:value="${jobEntity.id}">
+					</td>
+				</tr>
+				<tr>
+					<td>作业描述</td>
+					<td>
+						<input type="text" id="jobDescription" class="form-control" th:value="${jobEntity.jobDescription}">
+					</td>
+				</tr>
+				<tr>
+					<td>作业类型</td>
+					<td>
+						<select class="form-control" id="jobType">
+							<option th:selected="${jobEntity.jobType}=='1'" value="1">文件</option>
+							<option th:selected="${jobEntity.jobType}=='2'" value="2">数据库</option>
+							<option th:selected="${jobEntity.jobType}=='12'" value="12">文件+数据库</option>
+							<option th:selected="${jobEntity.jobType}=='3'" value="3">二进制文件</option>
+							<option th:selected="${jobEntity.jobType}=='4'" value="4">流文件</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>备注</td>
+					<td>
+						<input id="remarks" type="text" class="form-control" th:value="${jobEntity.remarks}">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="adv-table" th:fragment="start-suceess"></div>
+	<div class="adv-table" th:fragment="start-failure"></div>
+	<div class="adv-table" th:fragment="stop-suceess"></div>
+	<div class="adv-table" th:fragment="stop-failure"></div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+package cn.com.goldwind.kis.service;
+
+import org.springframework.ui.ModelMap;
+
+import cn.com.goldwind.kis.entity.SearchLog;
+import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
+
+public interface SearchLogService {
+	public TableSplitResult<SearchLog> findPage(ModelMap map, Integer pageNumber, Integer pageSize);
+
+	public int insert(SearchLog searchLog);
+
+	public int update(SearchLog searchLog);
+
+	public SearchLog findByEmpNoAndFindContent(SearchLog searchLog);
+}

@@ -1,0 +1,378 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lantrack</groupId>
+		<artifactId>mdip</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>mdip-web</artifactId>
+	<packaging>war</packaging>
+	<name>mdip-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<repositories>
+		<repository>
+			<id>pentaho.resolve.repo</id>
+			<name>Pentaho Omni</name>
+			<url>http://nexus.pentaho.org/content/groups/omni</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+
+		<!-- spring -->
+		<spring.version>4.3.8.RELEASE</spring.version>
+
+		<!-- Spring Data JPA -->
+		<spring.data.jpa.version>1.11.4.RELEASE</spring.data.jpa.version>
+
+		<!-- apache commons -->
+		<commons-fileupload.version>1.3.2</commons-fileupload.version>
+
+		<!-- jackson -->
+		<jackson.version>2.8.8</jackson.version>
+
+		<!-- servlet(如在Build Path 中引入了Tomcat lib目录，则不需要此处再次引入) -->
+		<servlet.api.version>3.1.0</servlet.api.version>
+		<servlet.jsp.version>2.2</servlet.jsp.version>
+
+		<!-- hibernate -->
+		<hibernate.jpa.version>1.0.0.Final</hibernate.jpa.version>
+		<hibernate.version>4.3.6.Final</hibernate.version>
+		<hibernate.validator.version>5.4.1.Final</hibernate.validator.version>
+
+		<!-- thymeleaf -->
+		<thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
+
+		<!-- shiro -->
+		<shiro.version>1.3.2</shiro.version>
+
+		<!-- ehcache -->
+		<ehcache-core.version>2.4.7</ehcache-core.version>
+
+		<!-- janino -->
+		<janino.version>2.7.8</janino.version>
+
+		<!-- kafka -->
+		<kafka-clients.version>0.10.2.1</kafka-clients.version>
+		<kafka_2.11.version>0.10.2.1</kafka_2.11.version>
+
+		<!-- kettle -->
+		<kettle.version>7.1.0.0-12</kettle.version>
+
+		<!-- mdip-common -->
+		<mdip-common.version>0.0.1-SNAPSHOT</mdip-common.version>
+
+		<!-- quartz -->
+		<quartz.version>2.2.1</quartz.version>
+
+		<!-- fastjson -->
+		<fastjson.version>1.2.28</fastjson.version>
+
+		<!-- rhino js -->
+		<rhino.js.version>1.7R2</rhino.js.version>
+
+		<!-- mail -->
+		<mail.version>1.4.7</mail.version>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<!-- common begin -->
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons-fileupload.version}</version>
+		</dependency>
+		<!-- common end -->
+
+		<!-- SPRING BEGIN -->
+		<!-- 引用此类会自动加载spring的core（其它组件要都要使用到这个包里的类，是其它组件的基本核心，外部依赖Commons Logging）、beans（包含访问配置文件、创建和管理bean 
+			以及进行DI AOP 操作相关的所有类）、aop（提供AOP（面向切面编程）的实现 ）、context包（为Spring 核心提供了大量扩展。可以找到使用Spring 
+			ApplicationContext特性时所需的全部类，JDNI 所需的全部类，instrumentation组件以及校验Validation 方面的相关类） -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- 提供对事务的支持 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- 包含Web应用开发时，用到Spring框架时所需的核心类，包括自动载入WebApplicationContext特性的类、Struts与JSF集成类、文件上传的支持类、Filter类和大量工具辅助类 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- 对JUNIT等测试框架的简单封装 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- 这个jar 文件包含Spring MVC 框架相关的所有类。包括框架的Servlets，Web MVC框架，控制器和视图支持。当然，如果你的应用使用了独立的MVC 
+			框架，则无需这个JAR 文件里的任何类。 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- 这个jar是spring扩展 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- spring 对jpa的支持 -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring.data.jpa.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- SPRING END -->
+
+		<!-- hibernate start -->
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api </artifactId>
+			<version>${hibernate.jpa.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate.validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>${hibernate.version}</version>
+			<exclusions><!--排除2.5以上的版本 使用hibernate的2.4*版 -->
+				<exclusion>
+					<groupId>net.sf.ehcache</groupId>
+					<artifactId>ehcache-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- hibernate end -->
+
+		<!-- ehcache start -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>${ehcache-core.version}</version>
+		</dependency>
+		<!-- ehcache end -->
+
+		<!-- jackson start -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<!-- jackson end -->
+
+		<!--servlet start -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>${servlet.jsp.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--servlet end -->
+
+		<!-- thymeleaf start -->
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf</artifactId>
+			<version>${thymeleaf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring4</artifactId>
+			<version>${thymeleaf.version}</version>
+		</dependency>
+		<!-- thymeleaf end -->
+
+		<!-- shiro start -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-quartz</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-aspectj</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-cas</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<!-- shiro end -->
+
+		<!-- janino start -->
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>${janino.version}</version>
+		</dependency>
+		<!-- janino end -->
+
+		<!-- kafka start -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>${kafka-clients.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.11</artifactId>
+			<version>${kafka_2.11.version}</version>
+		</dependency>
+		<!-- kafka end -->
+
+		<!-- kettle start -->
+		<dependency>
+			<groupId>pentaho-kettle</groupId>
+			<artifactId>kettle-core</artifactId>
+			<version>${kettle.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>pentaho-kettle</groupId>
+			<artifactId>kettle-dbdialog</artifactId>
+			<version>${kettle.version}</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>pentaho-kettle</groupId>
+			<artifactId>kettle-engine</artifactId>
+			<version>${kettle.version}</version>
+			不需要引入Jetty等jar
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency> -->
+		<dependency>
+		  <groupId>pentaho-kettle</groupId>
+		  <artifactId>kettle-engine</artifactId>
+		  <version>7.1.0.0-12</version>
+		</dependency>
+		<!-- kettle end -->
+
+		<!-- quartz start -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
+		<!-- quartz end -->
+
+		<!-- fastjson start -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+		<!-- fastjson end -->
+
+		<!-- rhino js -->
+		<dependency>
+			<groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>${rhino.js.version}</version>
+		</dependency>
+
+		<!-- mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${mail.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
+		<!-- mdip-common start -->
+		<dependency>
+			<groupId>com.lantrack</groupId>
+			<artifactId>mdip-common</artifactId>
+			<version>${mdip-common.version}</version>
+		</dependency>
+		<!-- mdip-common end -->
+	</dependencies>
+
+	<build>
+		<finalName>mdip-web</finalName>
+	</build>
+</project>

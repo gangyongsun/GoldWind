@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.goldwind.kis.repository.KeyInfoRepository">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.entity.KeyInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="chinese" property="chinese" jdbcType="VARCHAR" />
+		<result column="english" property="english" jdbcType="VARCHAR" />
+		<result column="classification1" property="classification1" jdbcType="VARCHAR" />
+		<result column="classification2" property="classification2" jdbcType="VARCHAR" />
+		<result column="classification3" property="classification3" jdbcType="VARCHAR" />
+		<result column="sentenceCN" property="sentenceCN" jdbcType="VARCHAR" />
+		<result column="sentenceEN" property="sentenceEN" jdbcType="VARCHAR" />
+		<result column="sentenceCNResource" property="sentenceCNResource" jdbcType="VARCHAR" />
+		<result column="sentenceENResource" property="sentenceENResource" jdbcType="VARCHAR" />
+		<result column="abbreviationCN" property="abbreviationCN" jdbcType="VARCHAR" />
+		<result column="abbreviationEN" property="abbreviationEN" jdbcType="VARCHAR" />
+		<result column="synonymCN" property="synonymCN" jdbcType="VARCHAR" />
+		<result column="synonymEN" property="synonymEN" jdbcType="VARCHAR" />
+		<result column="definationCN" property="definationCN" jdbcType="VARCHAR" />
+		<result column="definationEN" property="definationEN" jdbcType="VARCHAR" />
+		<result column="definationCNResource" property="definationCNResource" jdbcType="VARCHAR" />
+		<result column="definationENResource" property="definationENResource" jdbcType="VARCHAR" />
+		<result column="image" property="image" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="source" property="source" jdbcType="VARCHAR" />
+		<result column="contributor" property="contributor" jdbcType="VARCHAR" />
+		<result column="totalClick" property="totalClick" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,
+		chinese,
+		english,
+		classification1,
+		classification2,
+		classification3,
+		sentenceCN,
+		sentenceEN,
+		sentenceCNResource,
+		sentenceENResource,
+		abbreviationCN,
+		abbreviationEN,
+		synonymCN,
+		synonymEN,
+		definationCN,
+		definationEN,
+		definationCNResource,
+		definationENResource,
+		image,
+		remark,
+		status,
+		source,
+		contributor,
+		totalClick
+	</sql>
+	<sql id="limit_sql">
+		<if test="page_sql != null and page_sql != ''">
+			${page_sql}
+		</if>
+	</sql>
+
+	<sql id="where_all">
+		<where>
+			<if test="findContent != null and findContent !='' ">
+				chinese = #{findContent,jdbcType=VARCHAR} or LOWER(english) = #{findContent,jdbcType=VARCHAR}
+			</if>
+			<if test="termType != null and termType !='' ">
+				classification2 = #{termType,jdbcType=VARCHAR}
+			</if>
+			<if test="findContentList != null and findContentList.size()>0">
+				chinese in
+				<foreach collection="findContentList" item="content" index="index" open="(" separator="," close=")">
+					#{content}
+				</foreach>
+				or LOWER(english) in
+				<foreach collection="findContentList" item="content" index="index" open="(" separator="," close=")">
+					#{content}
+				</foreach>
+			</if>
+		</where>
+	</sql>
+	<sql id="order_by">
+		<if test="findContentList != null and findContentList.size()>0">
+			order by field(chinese,
+			<foreach collection="findContentList" item="content" index="index" separator=",">
+				#{content}
+			</foreach>
+			),
+			field(LOWER(english),
+			<foreach collection="findContentList" item="content" index="index" separator=",">
+				#{content}
+			</foreach>
+			)
+		</if>
+	</sql>
+
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_key_info
+		<include refid="where_all" />
+		<include refid="order_by" />
+		<include refid="limit_sql" />
+	</select>
+
+	<select id="findCount" resultMap="BaseResultMap">
+		select count(1) from t_key_info
+		<include refid="where_all" />
+	</select>
+
+	<select id="findByTermName" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_key_info
+		<include refid="where_all" />
+		<!-- <include refid="limit_sql" /> -->
+	</select>
+
+	<select id="findTermTypes" resultType="java.lang.String">
+		select distinct classification2 from t_key_info
+	</select>
+
+	<select id="findByTermType" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_key_info where classification2 = #{termType,jdbcType=VARCHAR}
+		<!-- <include refid="limit_sql" /> -->
+	</select>
+
+	<select id="getNumByType" resultType="java.lang.Integer">
+		select count(1) classification2num from t_key_info where classification2= #{termType,jdbcType=VARCHAR} order by
+		classification2num
+	</select>
+
+	<select id="findHotTerms" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_key_info
+		order by totalClick desc limit 0,#{num,jdbcType=INTEGER}
+	</select>
+
+	<select id="findAccessSummary" resultType="cn.com.goldwind.kis.entity.AccessSummary">
+		SELECT classification2 classification,sum(totalClick) totalAccess
+		FROM t_key_info
+		group by classification2
+		having
+		totalAccess>0
+		order by totalAccess desc
+	</select>
+
+	<select id="findAccessSummary4backGround" resultType="cn.com.goldwind.kis.entity.AccessSummary">
+		SELECT classification3 classification,sum(totalClick) totalAccess
+		FROM t_key_info
+		group by classification3
+		having totalAccess>0
+		order by totalAccess desc
+	</select>
+
+	<select id="findQuantatySummary" resultType="cn.com.goldwind.kis.entity.AccessSummary">
+		SELECT classification2 classification,count(1) classificationQuantaty
+		FROM t_key_info
+		group by classification2
+		order by
+		classificationQuantaty
+	</select>
+	
+	<select id="findTermList_en" resultType="java.lang.String">
+		SELECT english FROM t_key_info where english!=''
+	</select>
+	
+	<select id="findTermList_cn" resultType="java.lang.String">
+		SELECT chinese FROM t_key_info where chinese!=''
+	</select>
+	
+	<select id="findTermList_abbreviationEN" resultType="java.lang.String">
+		SELECT abbreviationEN FROM t_key_info where abbreviationEN!=''
+	</select>
+	
+	<select id="findTermList_abbreviationCN" resultType="java.lang.String">
+		SELECT abbreviationCN FROM t_key_info where abbreviationCN!=''
+	</select>
+
+</mapper>

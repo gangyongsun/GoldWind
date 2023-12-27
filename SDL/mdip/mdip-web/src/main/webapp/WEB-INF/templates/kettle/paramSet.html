@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<div class="modal fade"  aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="mySetModal" th:fragment="paramSet">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+					<h4 class="modal-title">参数设置</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="paramSetForm" th:action="@{/kettle/setParams}">
+						<div class="form-group" id="paramSetDiv"></div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button id="paramSetFormClose" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-success" data-dismiss="modal" onclick="setParams()">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

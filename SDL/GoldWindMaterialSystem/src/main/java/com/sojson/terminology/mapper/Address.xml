@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sojson.terminology.dao.AddressMapper">
+	<resultMap id="BaseResultMap" type="com.sojson.terminology.bo.Address">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="receiver_name" property="receiver_name" jdbcType="VARCHAR" />
+		<result column="receiver_phone" property="receiver_phone" jdbcType="VARCHAR" />
+		<result column="receiver_mobile" property="receiver_mobile" jdbcType="VARCHAR" />
+		<result column="receiver_state" property="receiver_state" jdbcType="VARCHAR" />
+		<result column="receiver_city" property="receiver_city" jdbcType="VARCHAR" />
+		<result column="receiver_district" property="receiver_district" jdbcType="VARCHAR" />
+		<result column="receiver_address" property="receiver_address" jdbcType="VARCHAR" />
+		<result column="receiver_zip" property="receiver_zip" jdbcType="VARCHAR" />
+		<result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="update_time" jdbcType="TIMESTAMP" />
+		<result column="user_id" property="user_id" jdbcType="BIGINT" />
+		<result column="viewable" property="viewable" jdbcType="TINYINT" />
+		<result column="default_address" property="default_address" jdbcType="TINYINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,receiver_name,receiver_phone,receiver_mobile,receiver_state,receiver_city,receiver_district,receiver_address,receiver_zip,create_time,update_time,user_id,viewable,default_address
+	</sql>
+
+	<sql id="limit_sql">
+		<if test="page_sql != null and page_sql != ''">
+			${page_sql}
+		</if>
+	</sql>
+
+	<sql id="where_all">
+		<where>
+			<if test="user_id != null and user_id !='' ">
+				and (
+					user_id=#{user_id,jdbcType=BIGINT}
+				)
+			</if>
+			<if test="viewable != null and viewable !='' ">
+				and (
+					viewable=#{viewable,jdbcType=TINYINT}
+				)
+			</if>
+		</where>
+	</sql>
+
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_address
+		<include refid="where_all" />
+		<include refid="limit_sql" />
+	</select>
+
+	<select id="findCount" resultMap="BaseResultMap">
+		select count(id) from tb_address
+		<include refid="where_all" />
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from tb_address where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select _add.* from tb_address _add,tb_order_address _o_add where _add.id=_o_add.address_id and _o_add.order_id=#{order_id,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.sojson.terminology.bo.Address">
+		insert into tb_address
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="receiver_name != null">
+				receiver_name,
+			</if>
+			<if test="receiver_phone != null">
+				receiver_phone,
+			</if>
+			<if test="receiver_mobile != null">
+				receiver_mobile,
+			</if>
+			<if test="receiver_state != null">
+				receiver_state,
+			</if>
+			<if test="receiver_city != null">
+				receiver_city,
+			</if>
+			<if test="receiver_district != null">
+				receiver_district,
+			</if>
+			<if test="receiver_address != null">
+				receiver_address,
+			</if>
+			<if test="receiver_zip != null">
+				receiver_zip,
+			</if>
+			<if test="create_time != null">
+				create_time,
+			</if>
+			<if test="update_time != null">
+				update_time,
+			</if>
+			<if test="user_id != null">
+				user_id,
+			</if>
+			<if test="viewable != null">
+				viewable,
+			</if>
+			<if test="default_address != null">
+				default_address,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="receiver_name != null">
+				#{receiver_name,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_phone != null">
+				#{receiver_phone,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_mobile != null">
+				#{receiver_mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_state != null">
+				#{receiver_state,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_city != null">
+				#{receiver_city,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_district != null">
+				#{receiver_district,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_address != null">
+				#{receiver_address,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_zip != null">
+				#{receiver_zip,jdbcType=VARCHAR},
+			</if>
+			<if test="create_time != null">
+				#{create_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="update_time != null">
+				#{update_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="user_id != null">
+				#{user_id,jdbcType=VARCHAR},
+			</if>
+			<if test="viewable != null">
+				#{viewable,jdbcType=TINYINT},
+			</if>
+			<if test="default_address != null">
+				#{default_address,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateSelectiveByPrimaryKey" parameterType="com.sojson.terminology.bo.Address">
+		update tb_address
+		<set>
+			<if test="receiver_name != null">
+				receiver_name = #{receiver_name,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_phone != null">
+				receiver_phone = #{receiver_phone,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_mobile != null">
+				receiver_mobile = #{receiver_mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_state != null">
+				receiver_state= #{receiver_state,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_city != null">
+				receiver_city= #{receiver_city,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_district != null">
+				receiver_district = #{receiver_district,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_address != null">
+				receiver_address = #{receiver_address,jdbcType=VARCHAR},
+			</if>
+			<if test="receiver_zip != null">
+				receiver_zip = #{receiver_zip,jdbcType=VARCHAR},
+			</if>
+			<if test="create_time != null">
+				create_time = #{create_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="update_time != null">
+				update_time = #{update_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="viewable != null">
+				viewable = #{viewable,jdbcType=TINYINT},
+			</if>
+			<if test="default_address != null">
+				viewable = #{default_address,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<update id="updateDefaultAddress4Reset">
+		update tb_address set default_address=false where user_id=#{user_id,jdbcType=BIGINT} and default_address=True
+	</update>
+	
+	<update id="setDefaultAddressByPrimaryKey">
+		update tb_address set default_address=true where id=#{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from tb_address
+		where
+		user_id = #{user_id,jdbcType=BIGINT} and viewable=true
+	</select>
+</mapper>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://shiro.apache.org/tags">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="shortcut icon" href="../../static/img/fav.png">
+<meta name="author" content="codepixer">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta charset="UTF-8">
+
+<title>Goldwind-Terminology</title>
+<link rel="stylesheet" th:href="@{/static/css/fonts.google.1.css}" href="../../static/css/fonts.google.1.css">
+<link rel="stylesheet" th:href="@{/static/css/fonts.google.2.css}" href="../../static/css/fonts.google.2.css">
+<link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" href="../../static/css/bootstrap.min.css">
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.css}" href="../../static/css/font-awesome.css">
+<link rel="stylesheet" th:href="@{/static/css/plugins/bootstrap-table/bootstrap-table.min.css}" href="../../static/css/plugins/bootstrap-table/bootstrap-table.min.css">
+<link rel="stylesheet" th:href="@{/static/css/main.css}" href="../../static/css/main.css">
+<link rel="stylesheet" th:href="@{/static/css/animate.css}" href="../../static/css/animate.css">
+<link rel="stylesheet" th:href="@{/static/css/style.css}" href="../../static/css/style.css">
+</head>
+<body id="indexMain">
+	<!-- <section class="relative">
+		<div class="container">
+			<div id="logo">
+				<a href="index"><img height="100" width="200" th:src="@{/static/img/logo.svg}" src="../../static/img/logo.svg" /></a>
+			</div>
+		</div>
+	</section> -->
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>用户反馈记录</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<!-- <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+							<shiro:hasPermission name="user/add">
+								<a class="btn btn-success" id="addUser" onclick="showModal('showAddUser')"><span class="glyphicon glyphicon-plus"></span> 添加用户</a>
+							</shiro:hasPermission>
+							<shiro:hasPermission name="user/multidelete">
+								<a class="btn btn-danger" id="deleteSelected" onclick="deleteSelected()"><span class="glyphicon glyphicon-trash"></span> 删除用户</a>
+							</shiro:hasPermission>
+						</div> -->
+						<table id="webResponseTable"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/static/js/jquery-3.1.1.min.js}" src="../../static/js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}" src="../../static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap-table/bootstrap-table.js}" src="../../static/js/bootstrap-table/bootstrap-table.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap-table/bootstrap-table-mobile.min.js}" src="../../static/js/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}" src="../../static/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" th:src="@{/static/js/echarts/echarts-all.js}" src="../../static/js/echarts/echarts-all.js"></script>
+    <script type="text/javascript" th:src="@{/static/js/kis/webResponse.js}" src="../../static/js/kis/webResponse.js"></script>
+</body>
+</html>

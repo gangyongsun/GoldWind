@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+	default-lazy-init="true">
+
+	<context:property-placeholder
+		ignore-unresolvable="true" location="classpath:config.properties" />
+
+	<!-- 缓存配置 cacheManager 当前的名子不要改变，因为CacheUtils 会引用他 -->
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+		<!-- <property name="shared" value="true"></property> -->
+	</bean>
+
+	<!-- CAS认证过滤器 -->
+	<!-- <bean id="casFilter" class="org.apache.shiro.cas.CasFilter"> <property 
+		name="failureUrl" value="/login"/> </bean> -->
+	<!--破解shiro 多登录入口问题 此处是为破解手机登录或ajax登录自动返回json格式 -->
+	<!--<bean id="forjsp" class="com.mdip.web.framework.shiro.FormAuthenticationFilter">
+		<property name="loginUrl" value="/login" />
+		<property name="successUrl" value="/loginsuc" />
+	</bean>-->
+	<bean id="forhtml" class="com.mdip.web.framework.shiro.FormAuthenticationFilter">
+		<property name="loginUrl" value="/login" />
+		<property name="successUrl" value="/loginsuc" />
+	</bean>
+	<bean id="frojson" class="com.mdip.web.framework.shiro.FormAuthenticationFilter">
+		<property name="loginUrl" value="/login.json" />
+		<property name="successUrl" value="/loginsuc.json" />
+	</bean>
+	<!-- 我才是真正的门卫，过了我这一关才行 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login.html" />
+		<!-- <property name="loginUrl" value="/login.html" /> 这里有好多坑哦，小心原理 没有权限或者失败后跳转的页面 
+			，门卫默认一定会放过我通过 <property name="successUrl" value="/index" />登录成功后 ，登录成功后门卫会亲自护送你去这里的，只有他才有这待遇，其他都下面的过虑！改天一定把你干掉，我要自己来
+	 -->	<property name="filters">
+			<map>
+				<!-- <entry key="cas" value-ref="casFilter"/> -->
+				<entry key="authc" value-ref="forhtml" />
+				<entry key="authjson" value-ref="frojson" />
+			</map>
+		</property>
+		<property name="filterChainDefinitions"><!-- 我是才通关大门，所有过路者过我的安检规则， -->
+			<!-- , roles[admin], perms[document:read] -->
+			<!-- Ant路径通配符支持?、*、**，注意通配符匹配不包括目录分隔符“/”： ?：匹配一个字符，如”/admin?”将匹配/admin1，但不匹配/admin或/admin2； 
+				*：匹配零个或多个字符串，如/admin*将匹配/admin、/admin123，但不匹配/admin/1； **：匹配路径中的零个或多个路径，如/admin/**将匹配/admin/a或/admin/a/b。 -->
+			<value>
+				/druid/** = anon <!-- 数据库sql监控平台登录放过 -->
+				/static/** = anon <!-- 这些都是大爷直接过，不检查 --> <!-- 让失效 做测试 -->
+				/servlet/validatecodeimg =anon<!-- 验证码 直接过 -->
+				<!-- /login**.html =anon登录页 直接过
+				/login**.jsp =anon登录页 直接过 -->
+				<!-- **/**.action/** = anon --><!-- 这些是外星过来的，得给点特权， moblie,第三方哦 -->
+				/login = authc	<!-- 表单可能会走私哦，查你 -->
+				/login.json = authjson	<!-- 表单可能会走私哦，查你 -->
+				/logout = logout<!-- 去天堂了，办理证明并将曾经的一切都烧掉吧 session,cache... -->
+				/** = user <!-- 平民们，查你 -->
+			</value>
+		</property>
+	</bean>
+
+	<!-- 核心 我是门卫安装的 安检机器哦 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="shiroDbRealm" /><!-- 登录成功后 赋权DIY -->
+		<property name="cacheManager" ref="shiroCacheManager" /><!-- 提升性能，你懂的 -->
+		<property name="sessionManager" ref="sessionManager" />	<!-- 不解释了吧这 -->
+		<property name="rememberMeManager" ref="rememberMeManager" />
+	</bean>
+	<!-- 自定义会话管理配置 -->
+	<bean id="sessionManager" class="com.mdip.web.framework.security.session.SessionManager">
+		<property name="sessionDAO" ref="sessionDAO" />
+
+		<!-- 会话超时时间，单位：毫秒 -->
+		<property name="globalSessionTimeout" value="${session.sessionTimeout}" />
+
+		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->
+		<property name="sessionValidationInterval" value="${session.sessionTimeoutClean}" />
+
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+
+		<property name="sessionIdCookie" ref="sessionIdCookie" />
+		<property name="sessionIdCookieEnabled" value="true" />
+
+	</bean>
+	<!-- 指定本系统SESSIONID, 默认为: JSESSIONID 问题: 与SERVLET容器名冲突, 如JETTY, TOMCAT 等默认JSESSIONID, 
+		当跳出SHIRO SERVLET时如ERROR-PAGE容器会为JSESSIONID重新分配值导致登录会话丢失! -->
+	<!-- 会话Cookie模板 -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="mdip-web.session.id" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="-1" />
+	</bean>
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="rememberMe" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="2592000" /><!-- 30天 -->
+	</bean>
+	<!-- rememberMe管理器 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位） -->
+		<property name="cipherKey"
+			value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />
+		<property name="cookie" ref="rememberMeCookie" />
+	</bean>
+
+	<!-- 显示配置，方便看，也可注解为服务删除此 配置 -->	<!-- 登录成功后 赋权DIY -->
+	<bean id="shiroDbRealm" class="com.mdip.web.framework.shiro.SystemAuthorizingRealm" />
+	
+	<!-- 用户授权/认证信息Cache, 采用EhCache 缓存 -->
+	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+	<bean id="sessionDAO" class="com.mdip.web.framework.security.session.CacheSessionDao">
+		<property name="sessionIdGenerator" ref="idGen" />
+		<property name="activeSessionsCacheName" value="activeSessionsCache" />
+		<property name="cacheManager" ref="shiroCacheManager" />
+	</bean>
+
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+
+	<!-- AOP式方法级权限检查 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+</beans>

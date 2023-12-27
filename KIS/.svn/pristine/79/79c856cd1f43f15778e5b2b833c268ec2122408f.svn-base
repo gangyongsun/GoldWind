@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.goldwind.kis.repository.DemoRepository">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.bo.HolyPublication">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="volumeName" property="volumeName" jdbcType="VARCHAR" />
+		<result column="byliner" property="byliner" jdbcType="VARCHAR" />
+		<result column="writingPlace" property="writingPlace" jdbcType="VARCHAR" />
+		<result column="finishTime" property="finishTime" jdbcType="VARCHAR" />
+		<result column="coverPeriod" property="coverPeriod" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+</mapper>

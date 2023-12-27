@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<ul>
+		<li th:fragment="profile">
+			<a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				张三
+				<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+				<li>
+					<a href="#">
+						<i class="fa fa-user"></i>
+						配置
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<i class="fa fa-cog"></i>
+						设置
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<i class="fa fa-sign-out"></i>
+						退出
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</body>
+</html>

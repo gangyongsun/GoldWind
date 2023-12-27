@@ -1,0 +1,282 @@
+package cn.com.goldwind.kis.mybatis;
+
+import java.lang.reflect.ParameterizedType;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.SqlSessionUtils;
+import org.mybatis.spring.support.SqlSessionDaoSupport;
+
+import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
+import cn.com.goldwind.kis.utils.LoggerUtils;
+import cn.com.goldwind.kis.utils.StringUtils;
+
+public class BaseMybatisDao<T> extends SqlSessionDaoSupport {
+	private String NAMESPACE;
+
+	final static Class<? extends Object> SELF = BaseMybatisDao.class;
+
+	/**
+	 * 默认的查询Sql id
+	 */
+	final static String SQL_ID_FINDALL = "findAll";
+
+	/**
+	 * 默认的查询Count sql id
+	 */
+	final static String SQL_ID_FINDCOUNT = "findCount";
+
+	public BaseMybatisDao() {
+		try {
+			Object genericClz = getClass().getGenericSuperclass();
+			if (genericClz instanceof ParameterizedType) {
+				Class<T> entityClass = (Class<T>) ((ParameterizedType) genericClz).getActualTypeArguments()[0];
+				NAMESPACE = entityClass.getPackage().getName() + "." + entityClass.getSimpleName();
+			}
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			LoggerUtils.error(SELF, "初始化失败，继承BaseMybatisDao，没有泛型！");
+		}
+	}
+
+	@Resource
+	public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+		super.setSqlSessionFactory(sqlSessionFactory);
+	}
+
+	/**
+	 * 分页查询
+	 * 
+	 * @param sqlId
+	 * @param countId
+	 * @param paramMap 参数
+	 * @param pageNo   页码号
+	 * @param pageSize 每页数量
+	 * @return
+	 */
+	public TableSplitResult findPage(String sqlId, String countId, Map<String, Object> paramMap, Integer pageNo, Integer pageSize) {
+		TableSplitResult page = new TableSplitResult();
+		pageNo = null == pageNo ? 1 : pageNo;
+		pageSize = null == pageSize ? 10 : pageSize;
+		page.setPageNo(pageNo);
+		page.setPageSize(pageSize);
+		int offset = (page.getPageNo() - 1) * page.getPageSize();
+
+		String page_sql = String.format(" limit  %s , %s ", offset, pageSize);
+		paramMap.put("page_sql", page_sql);
+
+		sqlId = String.format("%s.%s", NAMESPACE, sqlId);
+
+		Configuration configuration = this.getSqlSession().getConfiguration();
+		BoundSql boundSql = configuration.getMappedStatement(sqlId).getBoundSql(paramMap);
+		String sqlcode = boundSql.getSql();
+
+		LoggerUtils.fmtDebug(SELF, "findPage sql : %s", sqlcode);
+
+		String countCode = "";
+		BoundSql countSql = null;
+		if (StringUtils.isBlank(countId)) {
+			countCode = sqlcode;
+			countSql = boundSql;
+		} else {
+			countId = String.format("%s.%s", NAMESPACE, countId);
+			countSql = configuration.getMappedStatement(countId).getBoundSql(paramMap);
+			countCode = countSql.getSql();
+		}
+		Connection conn = null;
+		try {
+//			Connection conn = this.getSqlSession().getConnection();
+
+			SqlSessionTemplate st = (SqlSessionTemplate) getSqlSession();
+			conn = SqlSessionUtils.getSqlSession(st.getSqlSessionFactory(), st.getExecutorType(), st.getPersistenceExceptionTranslator()).getConnection();
+
+			List<Object> resultList = this.getSqlSession().selectList(sqlId, paramMap);
+			page.setRows(resultList);
+
+			// -------start:查询搜索的总条数并给page的total字段赋值-------
+			PreparedStatement ps = null;
+			ps = getPreparedStatement4Count(countCode, countSql.getParameterMappings(), paramMap, conn);
+			ps.execute();
+			ResultSet set = ps.getResultSet();
+
+			while (set.next()) {
+				page.setTotal(set.getInt(1));
+			}
+			// -------end:查询搜索的总条数并给page的total字段赋值-------
+		} catch (Exception e) {
+			e.printStackTrace();
+			LoggerUtils.error(SELF, "jdbc.error.code.findByPageBySqlId", e);
+		} finally {
+			try {
+				if (null != conn) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return page;
+	}
+
+	/**
+	 * 前端按搜索条件搜索分页查询
+	 * 
+	 * @param sqlId
+	 * @param countId
+	 * @param paramMap 参数
+	 * @param pageNo   页码号
+	 * @param pageSize 每页数量
+	 * @return
+	 */
+	public TableSplitResult findPage4SearchCondition(String sqlId, Map<String, Object> paramMap, Integer pageNo, Integer pageSize) {
+		TableSplitResult page = new TableSplitResult();
+		pageNo = null == pageNo ? 1 : pageNo;
+		pageSize = null == pageSize ? 10 : pageSize;
+		page.setPageNo(pageNo);
+		page.setPageSize(pageSize);
+		int offset = (page.getPageNo() - 1) * page.getPageSize();
+
+		String page_sql = String.format(" limit  %s , %s ", offset, pageSize);
+		paramMap.put("page_sql", page_sql);
+
+		sqlId = String.format("%s.%s", NAMESPACE, sqlId);
+
+		Configuration configuration = this.getSqlSession().getConfiguration();
+		BoundSql boundSql = configuration.getMappedStatement(sqlId).getBoundSql(paramMap);
+		String sqlcode = boundSql.getSql();
+
+		LoggerUtils.fmtDebug(SELF, "findPage sql : %s", sqlcode);
+
+		Connection conn = null;
+		try {
+			SqlSessionTemplate st = (SqlSessionTemplate) getSqlSession();
+			conn = SqlSessionUtils.getSqlSession(st.getSqlSessionFactory(), st.getExecutorType(), st.getPersistenceExceptionTranslator()).getConnection();
+
+			List<Object> resultList = this.getSqlSession().selectList(sqlId, paramMap);
+			page.setRows(resultList);
+
+			// -------start:查询搜索的总条数并给page的total字段赋值-------
+			if (paramMap.containsKey("findContentList")) {
+				page.setTotal(resultList.size());
+			} else {
+				page.setTotal(1);
+			}
+			// -------end:查询搜索的总条数并给page的total字段赋值-------
+		} catch (Exception e) {
+			e.printStackTrace();
+			LoggerUtils.error(SELF, "jdbc.error.code.findByPageBySqlId", e);
+		} finally {
+			try {
+				if (null != conn) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return page;
+	}
+
+	/**
+	 * 使用默认SQL做分页查询
+	 * 
+	 * @param params
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public TableSplitResult findPage(Map<String, Object> params, Integer pageNo, Integer pageSize) {
+		return findPage(SQL_ID_FINDALL, SQL_ID_FINDCOUNT, params, pageNo, pageSize);
+	}
+
+	/**
+	 * 前端按搜索条件搜索
+	 * <p>
+	 * 使用默认SQL做分页查询
+	 * 
+	 * @param params
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public TableSplitResult findPage4SearchCondition(Map<String, Object> params, Integer pageNo, Integer pageSize) {
+		return findPage4SearchCondition(SQL_ID_FINDALL, params, pageNo, pageSize);
+	}
+
+	/**
+	 * 分页查询Count 直接用用户自己写的Count sql
+	 * 
+	 * @param sql
+	 * @param parameterMappingList
+	 * @param params
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	private PreparedStatement getPreparedStatement4Count(String sql, List<ParameterMapping> parameterMappingList, Map<String, Object> params, Connection conn) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(StringUtils.trim(sql));
+		int index = 1;
+		for (int i = 0; i < parameterMappingList.size(); i++) {
+			ps.setObject(index++, params.get(parameterMappingList.get(i).getProperty()));
+		}
+		return ps;
+	}
+
+	/**
+	 * 分页查询Count 直接用用户自己写的Count sql
+	 * 
+	 * @param sql
+	 * @param conditionList
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+//	private PreparedStatement getPreparedStatement4Count4MMSep(String sql, List<String> conditionList, Connection conn) throws SQLException {
+//		PreparedStatement ps = conn.prepareStatement(StringUtils.trim(sql));
+//		int index = 1;
+//		for (int i = 0; i < conditionList.size(); i++) {
+//			System.out.println("index=" + index + ",condition[" + i + "]=" + conditionList.get(i));
+//			ps.setObject(index++, conditionList.get(i));
+//		}
+//		for (int i = 0; i < conditionList.size(); i++) {
+//			System.out.println("index=" + index + ",condition[" + i + "]=" + conditionList.get(i));
+//			ps.setObject(index++, conditionList.get(i));
+//		}
+//		return ps;
+//	}
+
+	/**
+	 * 组装
+	 * 
+	 * @param sql
+	 * @param parameterMappingList
+	 * @param params
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+//	private PreparedStatement getPreparedStatement(String sql, List<ParameterMapping> parameterMappingList, Map<String, Object> params, Connection conn) throws SQLException {
+//		// 分页根据数据库分页
+//		MysqlDialect mysqlDialect = new MysqlDialect();
+//
+//		PreparedStatement ps = conn.prepareStatement(mysqlDialect.getCountSqlString(sql));
+//		int index = 1;
+//		for (int i = 0; i < parameterMappingList.size(); i++) {
+//			ps.setObject(index++, params.get(parameterMappingList.get(i).getProperty()));
+//		}
+//		return ps;
+//	}
+}

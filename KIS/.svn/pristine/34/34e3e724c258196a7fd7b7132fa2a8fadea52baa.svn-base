@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.goldwind.kis.repository.WebAccessLogRepository">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.entity.WebAccessLog">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="empNo" property="empNo" jdbcType="VARCHAR" />
+		<result column="accessTime" property="accessTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,empNo,accessTime
+	</sql>
+
+	<sql id="limit_sql">
+		<if test="page_sql != null and page_sql != ''">
+			${page_sql}
+		</if>
+	</sql>
+
+	<sql id="where_all">
+		<where>
+			<if test="empNo != null and empNo !='' ">
+				and (
+					empNo= #{empNo,jdbcType=VARCHAR}
+				)
+			</if>
+		</where>
+	</sql>
+
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_webaccess_log
+		<include refid="where_all" />
+		<include refid="limit_sql" />
+	</select>
+
+	<select id="findCount" resultMap="BaseResultMap">
+		select count(1) from t_webaccess_log
+		<include refid="where_all" />
+	</select>
+	
+	<select id="searchTotalAccessEmp" resultType="java.lang.Integer">
+		select count(distinct(empNo))  FROM t_webaccess_log
+	</select>
+	
+	<select id="searchTotalAccessCount" resultType="java.lang.Integer">
+		SELECT count(1) FROM t_webaccess_log
+	</select>
+	
+	<select id="getRecent30Tendency" resultType="cn.com.goldwind.kis.bo.DailyAccessBo">
+		select 
+			DATE_FORMAT(accessTime,'%Y-%m-%d') accessDate,count(1) accessCount,count(distinct(empNo)) accessEmpCount 
+		from 
+			t_webaccess_log 
+		where accessTime >= date(now()) - interval #{timePeriod,jdbcType=INTEGER} day 
+		group by accessDate 
+		order by accessDate
+	</select>
+	
+	<select id="getCurrentSeasionTendency" resultType="cn.com.goldwind.kis.bo.DailyAccessBo">
+		select 
+			DATE_FORMAT(accessTime,'%Y-%m-%d')  accessDate, count(1) accessCount,count(distinct(empNo)) accessEmpCount  
+		from 
+			t_webaccess_log 
+		where QUARTER(accessTime)=QUARTER(now())
+		group by accessDate 
+		order by accessDate desc;
+	</select>
+	
+	<select id="getLastSeasionTendency" resultType="cn.com.goldwind.kis.bo.DailyAccessBo">
+		select 
+			DATE_FORMAT(accessTime,'%Y-%m-%d')  accessDate, count(1) accessCount,count(distinct(empNo)) accessEmpCount  
+		from 
+			t_webaccess_log 
+		where QUARTER(accessTime)=QUARTER(DATE_SUB(now(),interval 1 QUARTER))
+		group by accessDate 
+		order by accessDate desc
+	</select>
+	
+	<select id="getCurrentYearTendency" resultType="cn.com.goldwind.kis.bo.DailyAccessBo">
+		select 
+			DATE_FORMAT(accessTime,'%Y-%m-%d')  accessDate, count(1) accessCount,count(distinct(empNo)) accessEmpCount  
+		from 
+			t_webaccess_log 
+		where YEAR(accessTime)=YEAR(NOW())
+		group by accessDate 
+		order by accessDate desc
+	</select>
+	
+	<select id="getLastYearTendency" resultType="cn.com.goldwind.kis.bo.DailyAccessBo">
+		select 
+			DATE_FORMAT(accessTime,'%Y-%m-%d')  accessDate, count(1) accessCount,count(distinct(empNo)) accessEmpCount  
+		from 
+			t_webaccess_log 
+		where year(accessTime)=year(date_sub(now(),interval 1 year))
+		group by accessDate 
+		order by accessDate desc
+	</select>
+	
+	<select id="getTendency" resultType="cn.com.goldwind.kis.bo.DailyAccessBo">
+		select 
+			DATE_FORMAT(accessTime,'%Y-%m-%d')  accessDate, count(1) accessCount,count(distinct(empNo)) accessEmpCount  
+		from 
+			t_webaccess_log 
+		group by accessDate 
+		order by accessDate desc
+	</select>
+	
+</mapper>

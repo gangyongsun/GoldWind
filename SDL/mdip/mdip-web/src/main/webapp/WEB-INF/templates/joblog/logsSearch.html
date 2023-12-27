@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- log search  start-->
+	<div class="row" th:fragment="logsSearch">
+		<div class="col-md-12" style="height: 40px">
+			<!--bread crumbs start -->
+			<ul class="breadcrumb panel" style="background-color: #424F63">
+				<li>
+					<a href="#">
+						<i class="fa fa-home"></i>
+						作业管理
+					</a>
+				</li>
+				<li class="active">作业监控</li>
+			</ul>
+			<!--bread crumbs end -->
+		</div>
+		<div class="page-heading" style="margin-bottom: -20px;">
+			<div class="row">
+				<div class="col-md-12" style="height: 68px">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<form class="form-inline" role="form">
+								<div class="form-group">
+									<!-- <label class="form-label">日志ID</label> -->
+									<input type="hidden" id="txtLogId" class="form-control">
+								</div>
+								<div class="form-group">
+									<label class="form-label">作业名称</label>
+									<input type="text" id="txtJobName" class="form-control" maxlength="50">
+								</div>
+								<div class="form-group">
+									<label class="form-label">运行状态</label>
+									<select class="form-control" id="jobStatus">
+										<option value="" selected>请选择...</option>
+										<option value="Finished">已完成</option>
+										<option value="Stopped">停止的</option>
+										<option value="Running">运行中</option>
+										<!-- <option value="Initializing">初始化中</option>
+										<option value="Preparing executing">准备执行中</option>
+										<option value="Waiting">启动中</option>
+										<option value="Halting">停止中</option>
+										<option value="Paused">暂停的</option>
+										<option value="Finished (with errors)">完成的(有错)</option> -->
+									</select>
+								</div>
+								<div class="form-group">
+									<div class="col-md-2">
+										<input id="startDatetime" type="text" readonly class="form_datetime form-control" style="cursor:pointer;">
+									</div>
+								</div>
+								<label class="form-label">至</label>
+								<div class="form-group">
+									<div class="col-md-2">
+										<input id="endDatetime" type="text" readonly class="form_datetime form-control" style="cursor:pointer;">
+									</div>
+								</div>
+								<div class="form-group">
+									<button id="btnSearchLog" class="btn btn-primary form-control glyphicon glyphicon-search" type="button">查询</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- log search  end-->
+</body>
+</html>

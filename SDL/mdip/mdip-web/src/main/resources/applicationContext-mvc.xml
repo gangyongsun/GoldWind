@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties" />
+        
+    <!-- 
+	使用Annotation自动注册Bean,只扫描@Controller
+	<context:component-scan/>标签的作用 ：是告诉Spring 来扫描指定包下的类，并注册被@Controller，注解标记的组件
+	 -->
+	<!--  @Component，@Service，@Repository等不扫描，mvc中只扫描controller的注解， -->
+	<context:component-scan base-package="com.mdip.web"	use-default-filters="false"><!-- base-package 如果多个，用“,”分隔 -->
+		<context:include-filter type="annotation"	expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!-- 启用注解驱动 -->	
+	<mvc:annotation-driven/>
+
+<!-- 	
+    启用SpringMVC的注解功能,它会自动注册HandlerMapping、HandlerAdapter、ExceptionResolver的相关实例 
+    <mvc:annotation-driven />
+    SpringMVC的扫描范围
+    <context:component-scan base-package="com.mdip.web.controller,com.mdip.web.framework.sysbase.controller" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+-->
+    
+    <!-- 默认访问跳转到登录页面，即定义无Controller的path<->view直接映射 
+    <mvc:view-controller path="/" view-name="redirect:/login"/>
+    -->
+        
+    <!-- 配置国际化资源文件路径 -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+            <!-- 定义消息资源文件的相对路径 -->
+            <value>messages/message</value>
+        </property>
+    </bean>
+    <!-- 基于Cookie的本地化解析器 -->
+     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+       <property name="cookieMaxAge" value="604800"/>
+       <property name="defaultLocale" value="zh_CN"/>
+       <property name="cookieName" value="Language"></property>
+     </bean>
+    <!-- 基于Session的本地化解析器 -->
+    <!--<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />-->
+    
+    <!-- 静态文件访问 -->
+    <!-- <mvc:resources mapping="/resources/**" location="/resources/" /> -->
+    
+    <!-- 用于返回json格式 -->
+    <bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">    
+        <property name="supportedMediaTypes">    
+            <list>
+                <value>application/x-www-form-urlencoded;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+ 
+     <!-- 完成请求和注解POJO的映射 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+         <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+        
+    <!-- 使用thymeleaf解析 -->  
+	<bean id="templateResolver"  
+		class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">  
+		<property name="prefix" value="/WEB-INF/templates/" />  
+		<property name="suffix" value=".html" />  
+		<property name="templateMode" value="HTML" />  
+		<property name="cacheable" value="false" />
+		<!--解决中文乱码-->  
+		<property name="characterEncoding" value="UTF-8"/>  
+	</bean>  
+  
+	<bean id="templateEngine"  
+		class="org.thymeleaf.spring4.SpringTemplateEngine">  
+		<property name="templateResolver" ref="templateResolver" />  
+	</bean>  
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">  
+		<property name="templateEngine" ref="templateEngine" />
+		<!--解决中文乱码-->  
+		<property name="characterEncoding" value="UTF-8"/>
+		<property name="viewNames" value="*" />
+		<property name="order" value="2"/>   
+	</bean>
+	
+	<!-- 配置SpringMVC的视图解析器 -->
+    <!-- 其viewClass属性的默认值就是org.springframework.web.servlet.view.JstlView -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/" />
+        <property name="suffix" value=".jsp" />
+         <property name="viewNames" value="login*" />
+        <property name="order" value="1"/>
+    </bean>  
+
+	<!-- 文件上传解析器 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="maxUploadSize" value="1048576000"></property>
+		<property name="maxInMemorySize" value="40960"></property>
+	</bean>
+    
+    <!-- 总错误处理-->
+<!--     <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+        <property name="defaultErrorView">
+            <value>/base/error</value>
+        </property>
+        <property name="defaultStatusCode">
+            <value>500</value>
+        </property>
+        <property name="warnLogCategory">
+            <value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver</value>  
+        </property>
+    </bean> -->
+    
+<!-- 静态资源加载 
+    <mvc:resources location="/css/" mapping="/css/**" />
+    
+    <mvc:resources location="/images/" mapping="/images/**" />
+    <mvc:resources location="/ATTACHMENT/" mapping="/ATTACHMENT/**" />
+ -->
+     
+    <!-- 对静态资源文件的访问， 将无法mapping到Controller的path交给default servlet handler处理 -->
+	<mvc:default-servlet-handler />
+    <!-- 静态资源 -->
+    <mvc:resources location="/${appName}/static/**" mapping="/${appName}/static/" ></mvc:resources>
+    <!-- 如果当前路径是/ 则重定向到/...-->
+    <mvc:view-controller path="/" view-name="redirect:/login" />
+    
+</beans>

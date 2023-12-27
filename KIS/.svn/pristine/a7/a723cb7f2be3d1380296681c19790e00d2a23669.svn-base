@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>文件上传</title>
+	
+	<link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" href="../../static/css/bootstrap.min.css">
+	<link rel="stylesheet" th:href="@{/static/css/fileinput.css}" href="../../static/css/fileinput.css" />
+</head>
+<body>
+	<div class="container kv-main">
+		<form enctype="multipart/form-data" action="uploadFiles" method="post">
+			<div class="form-group">
+				<input id="_files_input" name="files" type="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="2">
+			</div>
+			<div class="form-group">
+				<label>用户名</label>
+				<input type="text" placeholder="请输入用户名" class="form-control" name="username">
+			</div>
+			<div class="form-group">
+				<label>密码</label>
+				<input type="password" placeholder="请输入密码" class="form-control" name="password">
+			</div>
+			<div>
+				<button class="btn btn-primary pull-right m-t-n-xs" type="submit">
+					<strong>提 交</strong>
+				</button>
+			</div>
+		</form>
+	</div>
+</body>
+<script type="text/javascript" th:src="@{/static/js/jquery-2.0.3.min.js}" src="../../static/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" th:src="@{/static/js/fileinput/fileinput.js}" src="../../static/js/fileinput/fileinput.js"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}" src="../../static/js/bootstrap.min.js"></script>
+<script>
+	$("#_files_input").fileinput(
+		{
+			language : 'zh', // 多语言设置，需要引入local中相应的js，例如locales/zh.js
+			theme : "explorer-fa", // 主题
+			uploadUrl : '#', // you must set a valid URL here else you will get an error
+			allowedFileExtensions : [ 'jpg', 'png', 'gif', 'pdf', 'docx', 'doc', 'xlsx', 'txt','dmg' ],
+			minFileCount : 1, // 最小上传数量
+			maxFileCount : 10, // 最大上传数量
+			overwriteInitial : false, // 覆盖初始预览内容和标题设置
+			showUpload : false, //是否显示上传按钮
+			browseLabel : '选择', // 浏览按钮内容
+			dropZoneEnabled : true, //显示拖拽区
+			layoutTemplates : {
+				actionUpload : ''
+			},
+			maxFileSize : 1024000,
+			slugCallback : function(filename) {
+				return filename.replace('(', '_').replace(']', '_');
+			}
+		});
+</script>
+</html>

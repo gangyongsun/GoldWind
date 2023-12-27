@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+ <substitutionProperty name="log.base" value="/root/mnt/home/logs/" />
+
+ <jmxConfigurator />
+
+ <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+  <layout class="ch.qos.logback.classic.PatternLayout">
+   <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+  </layout>
+ </appender>
+
+ <appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  <Encoding>UTF-8</Encoding>
+  <File>${log.base}/mdip.log</File>
+  <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+   <FileNamePattern>${log.base}/mdip-%d{yyyy-MM-dd}-%i.log.zip</FileNamePattern>
+   <MaxHistory>10</MaxHistory>
+      <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+    <MaxFileSize>5MB</MaxFileSize>
+   </TimeBasedFileNamingAndTriggeringPolicy>        
+  </rollingPolicy>
+  <layout class="ch.qos.logback.classic.PatternLayout">
+   <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+  </layout>
+ </appender>
+
+  <logger name="org.springframework">
+  <level value="INFO" />
+ </logger>
+ <logger name="org.apache.ftpserver">
+  <level value="WARN" />
+ </logger>
+ <logger name="org.hibernate">
+  <level value="INFO" />
+ </logger>
+ <logger name="org.hibernate.SQL">
+  <level value="ERROR" />
+ </logger>
+  <logger name="org.hibernate.cache">
+  <level value="INFO" />
+ </logger>
+ <logger name="org.safehaus.asyncweb">
+  <level value="INFO" />
+ </logger>
+ <logger name="org.logicalcobwebs.proxool">
+  <level value="DEBUG" />
+ </logger>
+
+ <root>
+ <!--  TRACE < DEBUG < INFO < WARN < ERROR -->
+  <level value="INFO" />
+  <!-- <appender-ref ref="stdout" /> -->
+  <appender-ref ref="logfile" />
+ </root>
+</configuration>

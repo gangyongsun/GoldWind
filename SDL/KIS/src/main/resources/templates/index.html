@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>GoldWind Key Information Search Engine</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}">
+<script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/kis/search.js}"></script>
+</head>
+<body class="container" th:fragment="keyInfoContentFragment" id="keyInfoMain">
+	<img th:src="@{/img/logo.png}">
+	<br>
+	<h1 align="center">
+		GoldWind Key Information Search Engine
+	</h1>
+	<br>
+	<div class="alert alert-danger  alert-dismissible" role="alert">
+		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span> 分页功能待开发...
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="input-group">
+				<input type="text" class="form-control" id="findContent" name="findContent" placeholder="请输入...">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button" onclick="searchKeyInfo()"><span class="glyphicon glyphicon-search">搜索</span></button>
+				</span>
+			</div><!-- /input-group -->
+		</div><!-- /.col-lg-12 -->
+	</div><!-- /.row -->
+	<hr>
+	<div class="panel panel-default">
+		<div class="panel-heading" align="center">Key Information</div>
+		<table class="table table-bordered">
+			<THEAD>
+				<tr>
+					<th>ID</th>
+					<th>中文</th>
+					<th>英文</th>
+					<th>主题分类</th>
+					<th>功能分类</th>
+					<th>位置分类</th>
+					<th>备注</th>
+				</tr>
+			</THEAD>
+			<TBODY>
+				<tr th:each="keyInfo:${keyInfoList}">
+					<td th:text="${keyInfo.id}"></td>
+					<td th:text="${keyInfo.chinese}"></td>
+					<td th:text="${keyInfo.english}"></td>
+					<td th:text="${keyInfo.subject}"></td>
+					<td th:text="${keyInfo.function}"></td>
+					<td th:text="${keyInfo.position}"></td>
+					<td th:text="${keyInfo.remark}"></td>
+				</tr>
+			</TBODY>
+		</table>
+	</div>
+</body>
+</html>

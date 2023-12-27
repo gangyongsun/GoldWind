@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- job import Modal -->
+	<div class="modal fade" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="jobImportModal" th:fragment="jobImport">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+					<h4 class="modal-title">导入作业文件</h4>
+				</div>
+				<div class="modal-body">
+					<!-- 作业导入界面开始 -->
+					<form class="form-horizontal" role="form" id="uploadForm" th:action="@{/kettle/uploadZipFile}" method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="inputJobName" class="col-lg-2 col-sm-2 control-label">作业名称</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" id="inputJobName" name="inputJobName" value="作业名称不要用中文" required>
+								<!-- <p class="help-block">作业名称最好不要用中文</p> -->
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputJobDescription" class="col-lg-2 col-sm-2 control-label">作业描述</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" id="inputJobDescription" name="inputJobDescription">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputJobDescription" class="col-lg-2 col-sm-2 control-label">作业类型</label>
+							<div class="col-lg-10">
+								<select class="form-control" id="inputJobType" name="inputJobType">
+									<option value="1" selected>文件</option>
+									<option value="2">数据库</option>
+									<option value="12">文件+数据库</option>
+									<option value="3">二进制文件</option>
+									<option value="4">流文件</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputKettleFile" class="col-lg-2 col-sm-2 control-label">选择作业</label>
+							<div class="col-lg-10">
+								<input type="file" id="inputKettleFile" name="inputKettleFile" accept="application/zip" required>
+								<p class="help-block">选择包含(.ktr .kjb .properties)文件的zip包</p>
+							</div>
+						</div>
+					</form>
+					<!-- 作业导入界面结束 -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default"  id="uploadFormClose" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-success"  data-dismiss="modal" onclick="uploadFile()">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

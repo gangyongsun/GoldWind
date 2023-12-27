@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- page heading start-->
+	<div class="row" th:fragment="tabledataSearch">
+		<div class="col-md-12" style="height: 40px">
+			<!--breadcrumbs start -->
+			<ul class="breadcrumb panel" style="background-color: #424F63">
+				<li>
+					<a href="#">
+						<i class="fa fa-home"></i>
+						数据管理
+					</a>
+				</li>
+				<li class="active">数据表管理</li>
+			</ul>
+			<!--breadcrumbs end -->
+		</div>
+		<div class="page-heading" style="margin-bottom: -20px;">
+			<div class="row">
+				<div class="col-md-12" style="height: 68px">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<form class="form-inline" role="form" id="conditionSelectDataForm" th:action="@{/tableData/searchData}" method="post">
+								<div class="form-group">
+									<label class="form-label">矿区</label>
+									<select id="area" name="area" class="selectpicker">
+										<option value="err" selected="selected">请选择</option>
+										<option value="南矿">南阳坡</option>
+										<option value="增矿">增子房</option>
+									</select>
+								</div>
+								<div class="form-group" id="itemSelectOptionReplace">
+									<label class="form-label">监控类型</label>
+									<select id="itemType" name="itemType" class="selectpicker">
+										<option value="err" selected="selected">请选择</option>
+										<option value="产量监控">产量监控</option>
+										<option value="瓦斯监控">瓦斯监控</option>
+										<option value="矿压监控">矿压监控</option>
+										<option value="人员定位">人员定位</option>
+										<option value="束管监控">束管监控</option>
+										<option value="主扇风压">主扇风压</option>
+										<option value="车辆定位">车辆定位</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label class="form-label">数据表</label>
+									<select id="tableName" name="tableName" class="selectpicker">
+										<option th:value="err" th:selected="selected">请选择</option>
+										<option th:value="product">产量监控表</option>
+										<option th:value="gas">瓦斯监控表</option>
+										<option th:value="rockpressure">矿压监控表</option>
+										<option th:value="personposition">人员定位表</option>
+										<option th:value="pipe">束管监控表</option>
+										<option th:value="mainfanpressure">主扇风压表</option>
+										<option th:value="vehicleposition">车辆定位表</option>
+									</select>
+								</div>
+								<div class="form-group" style="width: 50px"></div>
+								<div class="form-group">
+									<button id="btnSearch" class="btn btn-primary form-control" type="button" onclick="search();">查询</button>
+								</div>
+								<input type="hidden" id="curPage"></input>
+								<input type="hidden" id="pageSize"></input>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

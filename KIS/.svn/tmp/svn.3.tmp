@@ -1,0 +1,198 @@
+package cn.com.goldwind.kis.mmseg.similarity;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.logging.Logger;
+
+
+import cn.com.goldwind.kis.utils.IoUtil;
+import cn.com.goldwind.kis.utils.PropertiesUtil;
+
+/**
+ * 线上词表加载与存储
+ * @author adolf   201911205
+ *
+ */
+public class VocabluaryTable {
+	
+	// 异步形式
+	private static VocabluaryTable instance = null;
+
+	public synchronized static VocabluaryTable getInstance(){
+		if(instance == null){
+			instance = new VocabluaryTable();
+			
+		}
+		return instance;
+	}
+	private static final Logger log = Logger.getLogger(VocabluaryTable.class.getName());
+
+	private File dicPath = null; // 词库目录
+	/**
+	 * 中英对应的相似词向量
+	 */
+	private static Map<String, Vector<String>> words_sim_arr_ch = null;
+	private static Map<String, Vector<String>> words_sim_arr_en = null;
+	
+	private VocabluaryTable() {
+		this.words_sim_arr_ch = new HashMap<String, Vector<String>>();
+		this.words_sim_arr_en = new HashMap<String, Vector<String>>();
+
+		this.loadResource();
+	}
+	
+	private void loadResource() {
+		long start_time = System.currentTimeMillis();
+		
+		File wordsPath = null;
+		if (wordsPath == null) {
+			String defPath ="";
+			URL url = VocabluaryTable.class.getClassLoader().getResource("data_entity");
+			if (url != null) {
+				defPath = url.getFile();
+				log.info("look up in classpath=" + defPath);
+			} else {
+				defPath = System.getProperty("user.dir") + "/data_entity";
+				log.info("look up in user.dir=" + defPath);
+			}
+			wordsPath = new File(defPath);
+			// 20191205 加载线上的数据位置
+			boolean flag=wordsPath.exists();
+			if (!flag) {
+				wordsPath = new File(PropertiesUtil.getValueByKey("SERVER_DICT_PATH", "config.properties"));
+			}
+			
+		}
+		File charsFile = new File(wordsPath, "sim_dict.dict");
+		FileInputStream fis = null;
+    	InputStreamReader isr = null;
+    	BufferedReader br = null;
+    	int lineNum  = 0;
+		if (charsFile.exists()) {
+			try {
+				fis = new FileInputStream(charsFile);
+				isr = new InputStreamReader(fis, "UTF-8");
+	            br = new BufferedReader(isr);
+	            String textLine = "";
+	            int tag_falg = 0;
+	            while ((textLine = br.readLine()) != null) {
+	            	lineNum++;
+	            	if(textLine.length() > 1) {
+	            		if(textLine.startsWith("#") == true) {
+	            			tag_falg++;
+	            		}
+	            		else {
+	            			if(tag_falg == 1) {
+		            			int idx = textLine.indexOf("\t");
+		            			if (idx != -1) {
+		            				String word = textLine.substring(0, idx);
+		            				textLine = textLine.substring(idx + 1);
+		            				String arrays[] = textLine.split(";");
+		            				Vector<String> vec = new Vector<String>();
+		            				vec.add(word);
+				            		for(int i = 0; i < arrays.length; i++) {
+				            			String iner_arr[] = arrays[i].split(":");
+				            			if(iner_arr.length == 2) {
+					            			vec.add(iner_arr[0]);
+				            			}
+				            		}
+				            		this.words_sim_arr_ch.put(word, vec);
+		            			}
+		            		}
+		            		else if(tag_falg == 2) {
+		            			int idx = textLine.indexOf("\t");
+		            			if (idx != -1) {
+		            				String word = textLine.substring(0, idx);
+		            				textLine = textLine.substring(idx + 1);
+		            				String arrays[] = textLine.split(";");
+		            				Vector<String> vec = new Vector<String>();
+		            				vec.add(word);
+				            		for(int i = 0; i < arrays.length; i++) {
+				            			String iner_arr[] = arrays[i].split(":");
+				            			if(iner_arr.length == 2) {
+					            			vec.add(iner_arr[0]);
+				            			}
+				            		}
+				            		this.words_sim_arr_en.put(word, vec);
+		            			}
+		            		}
+	            		}
+	            	}
+	            }
+			} catch (IOException e) {
+		        e.printStackTrace();
+		    }
+		    finally {
+		    	IoUtil.close(br,isr,fis);
+		    }	
+		}
+		else {
+			log.info("load similarity words dicttionary is error!!!!!");
+		}
+		log.info("sim words loaded time=" + (System.currentTimeMillis()- start_time) + "ms, line=" + lineNum + ", size ={ " + 
+					this.words_sim_arr_ch.size() + " , " + this.words_sim_arr_en.size() + " }");		
+	}
+	
+	public List<String> getChinCharWords(String word) {
+		if(word == null || word.length() < 1) {
+			return null;
+		}
+		if(this.words_sim_arr_ch.containsKey(word) == true) {
+			List<String> ret_vec = new ArrayList<String>();
+			ret_vec = this.words_sim_arr_ch.get(word);
+			return ret_vec;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public List<String> getEngCharWords(String word) {
+		if(word == null || word.length() < 1) {
+			return null;
+		}
+		if(this.words_sim_arr_en.containsKey(word) == true) {
+			List<String> ret_value = new ArrayList<String>();
+			ret_value = this.words_sim_arr_en.get(word);
+			return ret_value;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public Set<String> getChinCharVocab() {
+		Set<String> vocab = new HashSet<String>();
+		for(String key : this.words_sim_arr_ch.keySet()) {
+			vocab.add(key);
+		}
+		return vocab;
+	}
+	
+	public Set<String> getEnglishCharVocab() {
+		Set<String> vocab = new HashSet<String>();
+		for(String key : this.words_sim_arr_en.keySet()) {
+			vocab.add(key);
+		}
+		return vocab;
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		VocabluaryTable vocab_tab = VocabluaryTable.getInstance();
+		
+		System.out.println(vocab_tab.getChinCharWords("电缆塔"));
+	}
+
+}

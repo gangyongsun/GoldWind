@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<div class="visible-xs hidden-sm hidden-md hidden-lg" th:fragment="hiddenprofile">
+		<div class="media logged-user">
+			<img alt="" src="/static/images/photos/user-avatar.png" class="media-object" th:src="@{/static/images/photos/user-avatar.png}">
+			<div class="media-body">
+				<h4>
+					<a href="#">张三</a>
+				</h4>
+				<span>"你好"</span>
+			</div>
+		</div>
+		<h5 class="left-nav-title">Account Information</h5>
+		<ul class="nav nav-pills nav-stacked custom-nav">
+			<li>
+				<a href="#">
+					<i class="fa fa-user"></i>
+					<span>配置</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class="fa fa-cog"></i>
+					<span>设置</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class="fa fa-sign-out"></i>
+					<span>退出</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>

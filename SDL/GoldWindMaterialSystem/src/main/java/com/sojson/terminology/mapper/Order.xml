@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sojson.terminology.dao.OrderMapper">
+	<resultMap id="BaseResultMap" type="com.sojson.terminology.bo.Order">
+		<id column="order_id" property="order_id" jdbcType="VARCHAR" />
+		<result column="payment" property="payment" jdbcType="DECIMAL" />
+		<result column="payment_type" property="payment_type" jdbcType="INTEGER" />
+		<result column="post_fee" property="post_fee" jdbcType="DECIMAL" />
+		<result column="order_status" property="order_status" jdbcType="INTEGER" />
+		<result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="update_time" jdbcType="TIMESTAMP" />
+		<result column="payment_time" property="payment_time" jdbcType="TIMESTAMP" />
+		<result column="consign_time" property="consign_time" jdbcType="TIMESTAMP" />
+		<result column="end_time" property="end_time" jdbcType="TIMESTAMP" />
+		<result column="close_time" property="close_time" jdbcType="TIMESTAMP" />
+		<result column="shipping_name" property="shipping_name" jdbcType="VARCHAR" />
+		<result column="shipping_code" property="shipping_code" jdbcType="VARCHAR" />
+		<result column="user_id" property="user_id" jdbcType="BIGINT" />
+		<result column="purchaser_id" property="purchaser_id" jdbcType="BIGINT" />
+		<result column="buyer_message" property="buyer_message" jdbcType="VARCHAR" />
+		<result column="buyer_nickname" property="buyer_nickname" jdbcType="VARCHAR" />
+		<result column="buyer_rate" property="buyer_rate" jdbcType="TINYINT" />
+		<result column="viewable" property="viewable" jdbcType="TINYINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		order_id, payment, payment_type, post_fee, order_status, create_time, update_time, payment_time, consign_time,
+		end_time,close_time,shipping_name,shipping_code,user_id,purchaser_id,buyer_message,buyer_nickname,buyer_rate,viewable
+	</sql>
+
+	<sql id="limit_sql">
+		<if test="page_sql != null and page_sql != ''">
+			${page_sql}
+		</if>
+	</sql>
+
+	<sql id="where_all">
+		<where>
+			<if test="user_id != null and user_id !='' ">
+				and (
+					user_id=#{user_id,jdbcType=BIGINT}
+				)
+			</if>
+			<if test="viewable != null and viewable !='' ">
+				and (
+					viewable=#{viewable,jdbcType=TINYINT}
+				)
+			</if>
+			<if test="findContent != null and findContent !='' ">
+				and (
+					order_id like CONCAT("%",#{findContent,jdbcType=VARCHAR},"%")
+				)
+			</if>
+			<if test="order_status != null and order_status !='' ">
+				and (
+					order_status =#{order_status,jdbcType=INTEGER}
+				)
+			</if>
+		</where>
+	</sql>
+
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_order
+		<include refid="where_all" />
+		<include refid="limit_sql" />
+	</select>
+
+	<select id="findCount" resultMap="BaseResultMap">
+		select count(order_id) from tb_order
+		<include refid="where_all" />
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from tb_order where order_id = #{order_id,jdbcType=VARCHAR}
+	</select>
+
+	<insert id="insert" useGeneratedKeys="false" keyProperty="order_id" parameterType="com.sojson.terminology.bo.Order">
+		insert into tb_order (
+			order_id,
+			payment,
+			payment_type,
+			post_fee,
+			order_status,
+			create_time,
+			update_time,
+			payment_time,
+			consign_time,
+			end_time,
+			close_time,
+			shipping_name,
+			shipping_code,
+			user_id,
+			purchaser_id,
+			buyer_message,
+			buyer_nickname,
+			buyer_rate,
+			viewable
+		)values(
+			#{order_id,jdbcType=VARCHAR},
+			#{payment,jdbcType=DECIMAL},
+			#{payment_type,jdbcType=INTEGER},
+			#{post_fee,jdbcType=DECIMAL},
+			#{order_status,jdbcType=INTEGER},
+			#{create_time,jdbcType=TIMESTAMP},
+			#{update_time,jdbcType=TIMESTAMP},
+			#{payment_time,jdbcType=TIMESTAMP},
+			#{consign_time,jdbcType=TIMESTAMP},
+			#{end_time,jdbcType=TIMESTAMP},
+			#{close_time,jdbcType=TIMESTAMP},
+			#{shipping_name,jdbcType=VARCHAR},
+			#{shipping_code,jdbcType=VARCHAR},
+			#{user_id,jdbcType=BIGINT},
+			#{purchaser_id,jdbcType=BIGINT},
+			#{buyer_message,jdbcType=VARCHAR},
+			#{buyer_nickname,jdbcType=VARCHAR},
+			#{buyer_rate,jdbcType=TINYINT},
+			#{viewable,jdbcType=TINYINT}
+		)
+	</insert>
+
+	<insert id="insertSelective" useGeneratedKeys="false" keyProperty="order_id" parameterType="com.sojson.terminology.bo.Order">
+		insert into tb_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="order_id != null">
+				order_id,
+			</if>
+			<if test="payment != null">
+				payment,
+			</if>
+			<if test="payment_type != null">
+				payment_type,
+			</if>
+			<if test="post_fee != null">
+				post_fee,
+			</if>
+			<if test="order_status != null">
+				order_status,
+			</if>
+			<if test="create_time != null">
+				create_time,
+			</if>
+			<if test="update_time != null">
+				update_time,
+			</if>
+			<if test="payment_time != null">
+				payment_time,
+			</if>
+			<if test="consign_time != null">
+				consign_time,
+			</if>
+			<if test="end_time != null">
+				end_time,
+			</if>
+			<if test="close_time != null">
+				close_time,
+			</if>
+			<if test="shipping_name != null">
+				shipping_name,
+			</if>
+			<if test="shipping_code != null">
+				shipping_code,
+			</if>
+			<if test="user_id != null">
+				user_id,
+			</if>
+			<if test="purchaser_id != null">
+				purchaser_id,
+			</if>
+			<if test="buyer_message != null">
+				buyer_message,
+			</if>
+			<if test="buyer_nickname != null">
+				buyer_nickname,
+			</if>
+			<if test="buyer_rate != null">
+				buyer_rate,
+			</if>
+			<if test="viewable != null">
+				viewable,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		<if test="order_id != null">
+				#{order_id,jdbcType=VARCHAR},
+			</if>
+			<if test="payment != null">
+				#{payment,jdbcType=DECIMAL},
+			</if>
+			<if test="payment_type != null">
+				#{payment_type,jdbcType=INTEGER},
+			</if>
+			<if test="post_fee != null">
+				#{post_fee,jdbcType=DECIMAL},
+			</if>
+			<if test="order_status != null">
+				#{order_status,jdbcType=INTEGER},
+			</if>
+			<if test="create_time != null">
+				#{create_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="update_time != null">
+				#{update_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="payment_time != null">
+				#{payment_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="consign_time != null">
+				#{consign_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="end_time != null">
+				#{end_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="close_time != null">
+				#{close_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="shipping_name != null">
+				#{shipping_name,jdbcType=VARCHAR},
+			</if>
+			<if test="shipping_code != null">
+				#{shipping_code,jdbcType=VARCHAR},
+			</if>
+			<if test="user_id != null">
+				#{user_id,jdbcType=BIGINT},
+			</if>
+			<if test="purchaser_id != null">
+				#{purchaser_id,jdbcType=BIGINT},
+			</if>
+			<if test="buyer_message != null">
+				#{buyer_message,jdbcType=VARCHAR},
+			</if>
+			<if test="buyer_nickname != null">
+				#{buyer_nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="buyer_rate != null">
+				#{buyer_rate,jdbcType=TINYINT},
+			</if>
+			<if test="viewable != null">
+				#{viewable,jdbcType=TINYINT}
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.sojson.terminology.bo.Order">
+		update tb_order
+		<set>
+			<if test="purchaser_id != null">
+				purchaser_id = #{purchaser_id,jdbcType=BIGINT},
+			</if>
+			<if test="order_status != null">
+				order_status = #{order_status,jdbcType=INTEGER},
+			</if>
+			<if test="update_time != null">
+				update_time = #{update_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="payment_time != null">
+				payment_time = #{payment_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="consign_time != null">
+				consign_time = #{consign_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="end_time != null">
+				end_time = #{end_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="close_time != null">
+				close_time = #{close_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="shipping_name != null">
+				shipping_name = #{shipping_name,jdbcType=VARCHAR},
+			</if>
+			<if test="shipping_code != null">
+				shipping_code = #{shipping_code,jdbcType=VARCHAR},
+			</if>
+			<if test="buyer_message != null">
+				buyer_message = #{buyer_message,jdbcType=VARCHAR},
+			</if>
+			<if test="buyer_nickname != null">
+				buyer_nickname = #{buyer_nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="buyer_rate != null">
+				buyer_rate = #{buyer_rate,jdbcType=TINYINT},
+			</if>
+			<if test="viewable != null">
+				viewable = #{viewable,jdbcType=TINYINT},
+			</if>
+		</set>
+		where order_id = #{order_id,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateByPrimaryKey" parameterType="com.sojson.terminology.bo.Order">
+		update tb_order
+		set 
+			purchaser_id = #{purchaser_id,jdbcType=BIGINT},
+			order_status = #{order_status,jdbcType=INTEGER},
+			update_time = #{update_time,jdbcType=TIMESTAMP},
+			payment_time = #{payment_time,jdbcType=TIMESTAMP},
+			consign_time = #{consign_time,jdbcType=TIMESTAMP},
+			end_time = #{end_time,jdbcType=TIMESTAMP},
+			close_time = #{close_time,jdbcType=TIMESTAMP},
+			shipping_name = #{shipping_name,jdbcType=VARCHAR},
+			shipping_code = #{shipping_code,jdbcType=VARCHAR},
+			buyer_message = #{buyer_message,jdbcType=VARCHAR},
+			buyer_nickname = #{buyer_nickname,jdbcType=VARCHAR},
+			buyer_rate = #{buyer_rate,jdbcType=TINYINT},
+			viewable = #{viewable,jdbcType=TINYINT}
+		where 
+			order_id = #{order_id,jdbcType=VARCHAR}
+	</update>
+</mapper>

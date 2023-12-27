@@ -1,0 +1,398 @@
+$(function() {
+	depNameDescTablePage();
+	empDescTablePage();
+	lineStackDataRequest();
+
+	$("#deptTab2").click(function() {
+		deptAccessEmpNumDataRequest();
+	});
+
+	$("#empTab2").click(function() {
+		empAccessCountDataRequest();
+	});
+})
+
+/**
+ * 请求个人访问次数数据
+ * 
+ * @returns
+ */
+function empAccessCountDataRequest() {
+	$.ajax({
+		type : "POST",
+		url : '/console/empDescList',
+		success : function(data) {
+			console.log(data);
+			var empArray = [];
+			var empAccessCountArray = [];
+			for ( var i in data) {
+				empArray.push(data[i].userName);
+				empAccessCountArray.push(data[i].accessCount);
+				if (i > 10)
+					break;
+			}
+			init_columnchart(empArray, empAccessCountArray, "empDescBar");
+		},
+		error : function(data) {
+			console.log("条形图初始化失败!");
+		}
+	});
+}
+
+/**
+ * 请求部门访问人数数据
+ * 
+ * @returns
+ */
+function deptAccessEmpNumDataRequest() {
+	$.ajax({
+		type : "POST",
+		url : '/console/depNameDescList',
+		success : function(data) {
+			var deptArray = [];
+			var deptEmpNumArray = [];
+			for ( var i in data) {
+				deptArray.push(data[i].deptName);
+				deptEmpNumArray.push(data[i].empNum);
+			}
+			init_barchart(deptArray, deptEmpNumArray, "depNameDescBar");
+		},
+		error : function(data) {
+			console.log("条形图初始化失败!");
+		}
+	});
+}
+
+/**
+ * 请求折线图数据
+ * 
+ * @returns
+ */
+function lineStackDataRequest() {
+	$.ajax({
+		type : "POST",
+		url : '/console/dailyAccessBoList',
+		success : function(data) {
+			var dateArray = [];
+			var accessCountArray = [];
+			var accessEmpCountArray = [];
+			for ( var i in data) {
+				dateArray.push(data[i].accessDate);
+				accessCountArray.push(data[i].accessCount);
+				accessEmpCountArray.push(data[i].accessEmpCount);
+			}
+			init_lineStack(dateArray, accessCountArray, accessEmpCountArray);// 初始化折线图
+		},
+		error : function(data) {
+			console.log("折线图初始化失败!");
+		}
+	});
+}
+
+/**
+ * 部门访问人数记录分页
+ * 
+ * @returns
+ */
+function depNameDescTablePage() {
+	var t = $("#depNameDescTable");
+	t.bootstrapTable('destroy');
+	var t = t.bootstrapTable({
+		url : '/console/depNameDescPage',
+		method : 'get',
+		dataType : "json",
+		cache : false, // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		undefinedText : "空",// 当数据为undefined时显示的字符
+		pagination : true, // 启用分页
+		pageNumber : 1,// 分页首页页码
+		pageSize : 5,// 分页页面数据条数
+		pageList : [ 5, 10, 20 ],// 设置可供选择的页面数据条数；设置为All则显示所有记录
+		paginationFirstText : "首页",// 指定“首页”按钮的图标或文字
+		paginationPreText : '上一页',// 指定“上一页”按钮的图标或文字
+		paginationNextText : '下一页',// 指定“下一页”按钮的图标或文字
+		paginationLastText : "末页",// 指定“末页”按钮的图标或文字
+		paginationLoop : false,// 不循环
+		data_local : "zh-US",// 表格汉化
+		sidePagination : "server", // 服务端处理分页
+		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
+		idField : "id",// 指定主键列
+		columns : [ {
+			title : '部门名称',
+			field : 'deptName',
+			align : 'left',
+			valign : 'middle'
+		}, {
+			title : '访问人数',
+			field : 'empNum',
+			align : 'left',
+			valign : 'middle'
+		} ]
+	});
+	t.on('load-success.bs.table', function(data) {// table加载成功后的监听函数
+		console.log("load console success");
+		$(".pull-right").css("display", "block");
+	});
+}
+
+/**
+ * 个人访问次数记录分页
+ * 
+ * @returns
+ */
+function empDescTablePage() {
+	var t = $("#empDescTable");
+	t.bootstrapTable('destroy');
+	var t = t.bootstrapTable({
+		url : '/console/empDescPage',
+		method : 'get',
+		dataType : "json",
+		cache : false, // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		undefinedText : "空",// 当数据为undefined时显示的字符
+		pagination : true, // 启用分页
+		pageNumber : 1,// 分页首页页码
+		pageSize : 5,// 分页页面数据条数
+		pageList : [ 5, 10, 20 ],// 设置可供选择的页面数据条数；设置为All则显示所有记录
+		paginationFirstText : "首页",// 指定“首页”按钮的图标或文字
+		paginationPreText : '上一页',// 指定“上一页”按钮的图标或文字
+		paginationNextText : '下一页',// 指定“下一页”按钮的图标或文字
+		paginationLastText : "末页",// 指定“末页”按钮的图标或文字
+		paginationLoop : false,// 不循环
+		data_local : "zh-US",// 表格汉化
+		sidePagination : "server", // 服务端处理分页
+		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
+		idField : "id",// 指定主键列
+		columns : [ {
+			title : '员工姓名',
+			field : 'userName',
+			align : 'left',
+			valign : 'middle'
+		}, {
+			title : '访问次数',
+			field : 'accessCount',
+			align : 'left',
+			valign : 'middle'
+		} ]
+	});
+	t.on('load-success.bs.table', function(data) {// table加载成功后的监听函数
+		console.log("load console success");
+		$(".pull-right").css("display", "block");
+	});
+}
+
+/**
+ * 折线图初始化
+ * 
+ * @param dateArray
+ * @param accessCountArray
+ * @param accessEmpCountArray
+ * @returns
+ */
+function init_lineStack(dateArray, accessCountArray, accessEmpCountArray) {
+	var dom = document.getElementById("line-stack-daily");
+	var myChart = echarts.init(dom);
+	var app = {};
+	option = null;
+	option = {
+		title : {
+			text : ''
+		},
+		tooltip : {
+			trigger : 'axis'
+		},
+		legend : {
+			data : [ '访问次数', '访问人数' ]
+		},
+		toolbox : {
+			show : true,
+			orient : 'vertical',
+			left : 'right',
+			top : 'center',
+			feature : {
+				dataView : {
+					show : true,
+					readOnly : false
+				},
+				magicType : {
+					show : true,
+					type : [ 'line', 'bar' ]
+				},
+				restore : {
+					show : true
+				},
+				saveAsImage : {
+					show : true
+				}
+			}
+		},
+		grid : {
+			left : '1%',
+			right : '1%',
+			bottom : '1%',
+			containLabel : true
+		},
+		toolbox : {
+			feature : {
+				saveAsImage : {}
+			}
+		},
+		xAxis : {
+			type : 'category',
+			boundaryGap : false,
+			data : dateArray,
+			axisLabel : {
+				interval : 0,
+				rotate : 45
+			}
+		},
+		yAxis : {
+			type : 'value'
+		},
+		series : [ {
+			name : '访问次数',
+			type : 'line',
+			stack : '总量',
+			data : accessCountArray
+		}, {
+			name : '访问人数',
+			type : 'line',
+			stack : '总量',
+			data : accessEmpCountArray
+		} ]
+	};
+	if (option && typeof option === "object") {
+		myChart.setOption(option, true);
+	}
+}
+
+/**
+ * 数条形图初始化
+ * 
+ * @param keyArray
+ * @param dataArray
+ * @returns
+ */
+function init_barchart(keyArray, dataArray, barName) {
+	var dom = document.getElementById(barName);
+	var myChart = echarts.init(dom);
+	var app = {};
+	option = null;
+	app.title = '部门访问人数条形图';
+
+	option = {
+		title : {
+			text : '',
+			subtext : ''
+		},
+		tooltip : {
+			trigger : 'axis',
+			axisPointer : {
+				type : 'shadow'
+			}
+		},
+		legend : {
+			data : [ '总访人数' ]
+		},
+		calculable : true,
+		grid : {
+			left : '3%',
+			right : '4%',
+			bottom : '3%',
+			containLabel : true
+		},
+		xAxis : {
+			type : 'value',
+			boundaryGap : [ 0, 0.1 ]
+		},
+		yAxis : {
+			type : 'category',
+			data : keyArray
+		},
+		series : [ {
+			name : '总访人数',
+			type : 'bar',
+			data : dataArray
+		} ]
+	};
+	if (option && typeof option === "object") {
+		myChart.setOption(option, true);
+	}
+}
+
+/**
+ * 柱状图
+ * 
+ * @param keyArray
+ * @param valueArray
+ * @param name
+ * @returns
+ */
+function init_columnchart(keyArray, valueArray, name) {
+	var dom = document.getElementById(name);
+	var myChart = echarts.init(dom);
+	var app = {};
+	option = null;
+	option = {
+		color : [ '#006699', '#4cabce', '#e5323e', '#003366' ],
+		tooltip : {
+			trigger : 'axis',
+			axisPointer : {
+				type : 'shadow'
+			}
+		},
+		legend : {
+			data : [ '总访问次数' ]
+		},
+		toolbox : {
+			show : true,
+			orient : 'vertical',
+			left : 'right',
+			top : 'center',
+			feature : {
+				dataView : {
+					show : true,
+					readOnly : false
+				},
+				magicType : {
+					show : true,
+					type : [ 'line', 'bar' ]
+				},
+				restore : {
+					show : true
+				},
+				saveAsImage : {
+					show : true
+				}
+			}
+		},
+		calculable : true,
+		xAxis : [ {
+			type : 'category',
+			data : keyArray,
+			axisTick : {
+				show : false
+			},
+			axisLabel : {
+				interval : 0,
+				rotate : 0
+			}
+		} ],
+		yAxis : [ {
+			type : 'value'
+		} ],
+		series : [ {
+			name : '总访问次数',
+			type : 'bar',
+			barGap : 0,
+			data : valueArray
+		} ]
+	};
+	if (option && typeof option === "object") {
+		myChart.setOption(option, true);
+	}
+}

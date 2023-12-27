@@ -1,0 +1,8 @@
+csv
+xlsx
+.idea
+venv
+test
+*__pycache__*
+*.csv
+*.html

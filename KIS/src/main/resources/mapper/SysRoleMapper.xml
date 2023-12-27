@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.goldwind.kis.shiro.dao.SysRoleMapper">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.shiro.domain.SysRole">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="role_desc" property="roleDesc" jdbcType="VARCHAR" />
+		<result column="role_type" property="roleType" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, role_desc, role_type
+	</sql>
+	<sql id="limit_sql">
+		<if test="page_sql != null and page_sql != ''">
+			${page_sql}
+		</if>
+	</sql>
+
+	<sql id="where_all">
+		<where>
+			<if test="findContent != null and findContent !='' ">
+				and (
+				LOWER(role_desc) like LOWER(CONCAT("%",#{findContent,jdbcType=VARCHAR},"%")) or 
+				LOWER(role_type) like LOWER(CONCAT("%",#{findContent,jdbcType=VARCHAR},"%"))
+				)
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 普通的分页查询 -->
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_role
+		<include refid="where_all" />
+		<include refid="limit_sql" />
+	</select>
+	<select id="findCount" resultMap="BaseResultMap">
+		select count(id) from sys_role
+		<include refid="where_all" />
+	</select>
+	
+	<!-- 根据用户ID查询用户拥有的角色名称列表 -->
+	<select id="findRoleNameByUserId" resultType="java.lang.String">
+		select r.role_desc from sys_role r,sys_user_role sysRole where sysRole.role_id = r.id and sysRole.user_id =
+		#{id,jdbcType=BIGINT}
+	</select>
+	<!-- 根据用户ID查询其拥有的角色列表 -->
+	<select id="findRoleByUserId" resultType="cn.com.goldwind.kis.shiro.bo.SysRoleBo">
+		select sysRole.id,sysRole.role_desc roleDesc,sysRole.role_type roleType,sysUserRole.user_id userId,ifnull(sysUserRole.user_id,0) marker from sys_role sysRole
+		left join(select * from sys_user_role where
+		user_id=#{id,jdbcType=BIGINT}) sysUserRole on sysUserRole.role_id = sysRole.id
+		order by sysRole.id
+	</select>
+
+	<!-- 权限分配列表分页查询 -->
+	<select id="findRoleAndResources" resultType="cn.com.goldwind.kis.shiro.bo.RoleResourceAllocationBo">
+		select sysRole.id,sysRole.role_type roleType,sysRole.role_desc roleDesc,group_concat(sysResource.resource_name) resourceNames,group_concat(sysResource.id)resourceIds from
+		sys_role sysRole left join
+		sys_role_resources sysRoleResource on sysRoleResource.role_id
+		= sysRole.id left join
+		sys_resources sysResource on sysResource.id = sysRoleResource.resources_id
+		<where>
+			<if test="findContent != null and findContent !='' ">
+				and (LOWER(sysRole.role_desc) like CONCAT("%",#{findContent,jdbcType=VARCHAR},"%") or LOWER(sysRole.role_type) like
+				CONCAT("%",#{findContent,jdbcType=VARCHAR},"%"))
+			</if>
+		</where>
+		group by sysRole.id
+		<include refid="limit_sql" />
+	</select>
+
+	<!-- 查询用户全部的role & permission -->
+	<resultMap id="findNowAllPermission_resultMap" extends="BaseResultMap" type="cn.com.goldwind.kis.shiro.domain.SysRole">
+		<collection property="permissions" javaType="cn.com.goldwind.kis.shiro.domain.SysResources">
+			<id column="id" property="id" jdbcType="BIGINT" />
+			<result column="resource_name" property="resourceName" jdbcType="VARCHAR" />
+			<result column="resource_url" property="resourceUrl" jdbcType="VARCHAR" />
+		</collection>
+	</resultMap>
+	<!-- 根据用户ID，查询所有权限 -->
+	<select id="findNowAllPermission" resultMap="findNowAllPermission_resultMap">
+		select sysRole.id,sysRole.role_desc,sysRole.role_type ,sysResource.id resourceId,sysResource.resource_url,sysResource.resource_name resourceName
+		from
+		(select role_id from sys_user_role where user_id =
+		#{userId,jdbcType=BIGINT}) sysUserRole
+		left join sys_role sysRole on sysUserRole.role_id = sysRole.id
+		left join
+		sys_role_resources sysRoleResource on sysRoleResource.role_id = sysRole.id
+		left join sys_resources sysResource on sysResource.id =
+		sysRoleResource.resources_id
+	</select>
+</mapper>

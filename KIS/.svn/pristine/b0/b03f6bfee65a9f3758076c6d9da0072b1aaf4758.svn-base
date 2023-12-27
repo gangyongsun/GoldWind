@@ -1,0 +1,258 @@
+$(function() {
+	$('.file-box').each(function () {
+		animationHover(this, 'pulse');
+	 });
+	
+	/**
+	 * 回车事件绑定
+	 */
+	document.onkeydown = function(event) {
+		var e = event || window.event || arguments.callee.caller.arguments[0];
+		if (e && e.keyCode == 13) {
+			searchTerminology();
+		}
+	}
+});
+
+/**
+ * 分页查询术语
+ * 
+ * @param obj
+ * @returns
+ */
+function searchTerminology(obj) {
+	var t=$("#termTable");
+	t.bootstrapTable('destroy');
+	// 获取类型
+	var termTypeValue = "";
+	if (null != obj) {
+		var termTypeValue = $(obj).attr("value");
+	}
+	// 获取搜索关键词
+	var findContentVal = $("#findContent").val();
+	var t = t.bootstrapTable({
+		url: '/kis/search',
+        method: 'get',
+        dataType: "json",
+        cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        detailView:true,
+        detailFormatter:"showTermDetailView",
+        undefinedText: "空",//当数据为undefined时显示的字符
+        pagination: true, //启用分页
+        pageNumber: 1,//分页首页页码
+        pageSize: 10,//分页页面数据条数
+        pageList: [10, 20, 50, 100],//设置可供选择的页面数据条数；设置为All则显示所有记录
+        paginationFirstText: "首页",//指定“首页”按钮的图标或文字
+        paginationPreText: '上一页',//指定“上一页”按钮的图标或文字
+        paginationNextText: '下一页',//指定“下一页”按钮的图标或文字
+        paginationLastText: "末页",//指定“末页”按钮的图标或文字
+        data_local: "zh-US",//表格汉化
+        sidePagination: "server", //服务端处理分页
+        queryParamsType:'',//默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+        queryParams:function (params) {
+	        //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+	        var temp = {   
+	        	pageNumber: params.pageNumber,//当前页(开始页)
+	    	    pageSize: params.pageSize,//每页的数量
+	    	    termType : termTypeValue,
+				findContent : findContentVal.trim()
+	        };
+	        return temp;
+	    },
+	    onClickRow:function (row,element) {
+	    	showDetail(row.id);
+        },
+      	idField: "id",//指定主键列
+        columns: [
+            {
+                visible:false,
+                field: 'id'
+            },
+            {
+                title: '中文',
+                field: 'chinese',
+                align: 'left',
+                valign: 'middle',
+                cellStyle:formatTableUnit,
+                formatter:paramsMatter
+            },
+            {
+                title: '英文',
+                field: 'english',
+                align: 'left',
+                valign: 'middle',
+                cellStyle:formatTableUnit,
+                formatter:paramsMatter
+            }
+        ],
+        formatNoMatches: function(){
+            return "该术语目前还没有收录，您的搜索已经告知管理员！";
+        },
+	    formatLoadingMessage: function(){
+	        return "请稍等，正在加载中...";
+	    }
+    });
+	
+	function paramsMatter(value,row,index) {
+        var span=document.createElement('span');
+        span.setAttribute('title','点击显示术语详情');
+        span.innerHTML = value;
+        return span.outerHTML;
+     }
+
+     function formatTableUnit(value, row, index) {
+        return {
+           css: {
+              "white-space": 'nowrap',
+              "text-overflow": 'ellipsis',
+              "overflow": 'hidden',
+              "cursor": 'pointer'
+           }
+        }
+     }
+	
+    t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
+        console.log("load success");
+        if($("#searchResultPanel").hasClass("hidden")){
+        	$("#searchResultPanel").removeClass("hidden");
+        }
+        $("#hotTermPanel").hide();
+        $("#chartPanel").hide();
+        $(".pull-right").css("display", "block");
+    });
+}
+
+function showTermDetailView(index, row) {
+	var html = []
+	//html.push('<p><b>分类信息:</b> ' + row.classification1 +'>'+row.classification2+'>'+row.classification3+ '</p>');
+
+	if (row.definationCN != "") {
+		html.push('<p><b>中文定义:</b> ' + row.definationCN + '</p>');
+	}
+	if (row.definationEN != "") {
+		html.push('<p><b>English Defination:</b> ' + row.definationEN + '</p>');
+	}
+	html.push('<p><b>热度系数:</b> ' + row.totalClick + '</p>');
+
+	return html.join('');
+}
+
+/**
+ * 显示详情
+ * 
+ * @param id
+ * @returns
+ */
+function showDetail(id) {
+	$.ajax({
+		type : "POST",
+		url : 'showDetail',
+		data : {
+			id : id
+		},
+		success : function(data) {
+			$("#myModal").html(data);
+			$('#myModal').modal('show');
+		},
+		error : function(data) {
+			console.log("搜索失败！");
+		}
+	});
+}
+
+/**
+ * 查看更多热词
+ * 
+ * @returns
+ */
+function showMoreHotTerms(obj){
+	if (null != obj) {
+		var num = $(obj).attr("id");
+	}else{
+		var num=8;
+	}
+	num=Number(num)+Number(8);
+//	console.log(num);
+	$.ajax({
+		type : "POST",
+		url : 'showMoreHotTerms',
+		data : {
+			number : num
+		},
+		success : function(data) {
+			$("#hotTermArea").html(data);
+		},
+		error : function(data) {
+			console.log("搜索更多热词失败！");
+		}
+	});
+}
+
+function openWebResponse(){
+	layui.use('layer', function(){
+		layer.open({
+		  type: 1 //Page层类型
+		  ,offset: 'rb'
+		  ,area: ['380px', '200px']
+		  ,title: '您的宝贵建议'
+		  ,shade: 0 //遮罩透明度
+		  ,maxmin: false //允许全屏最小化
+		  ,anim: 2 //0-6的动画形式，-1不开启
+		  ,content: '<div class="ibox-content">'+
+			            '<div class="form-horizontal m-t">'+
+			              '<div class="form-group">'+
+			                  '<div class="col-sm-12">'+
+			                      '<textarea id="webresponse" name="webresponse" class="form-control" required="" aria-required="true"></textarea>'+
+			                  '</div>'+
+			              '</div>'+
+			              '<div class="form-group">'+
+			                  '<div class="col-sm-1 col-sm-offset-9">'+
+			                      '<button class="btn btn-primary" type="button" onclick="javascript:webresponseLog();return false;">提交</button>'+
+			                  '</div>'+
+			              '</div>'+
+						'</div>'+
+			      	'</div>'
+		});
+	});
+}
+
+function webresponseLog(){
+	var content=$("#webresponse").val();
+	if(content.trim().length==0){
+		layer.msg("请输入您的宝贵建议!");
+	}else{
+		$.ajax({
+			type : "POST",
+			url : 'webresponseLog',
+			data : {
+				content : content
+			},
+			success : function(data) {
+				layer.closeAll();
+				toastrInfo();
+			},
+			error : function(data) {
+				console.log("反馈建议收集失败！");
+			}
+		});
+	}
+}
+
+function toastrInfo(){
+	toastr.options = {
+	  "closeButton": false,
+	  "debug": false,
+	  "progressBar": false,
+	  "positionClass": "toast-bottom-right",
+	  "onclick": null,
+	  "showDuration": "100",
+	  "hideDuration": "100",
+	  "timeOut": "2000",
+	  "extendedTimeOut": "1000",
+	  "showEasing": "swing",
+	  "hideEasing": "linear",
+	  "showMethod": "fadeIn",
+	  "hideMethod": "fadeOut"
+	};
+	toastr.info("Thanks for your suggestions!", "感谢您的宝贵建议！")
+}

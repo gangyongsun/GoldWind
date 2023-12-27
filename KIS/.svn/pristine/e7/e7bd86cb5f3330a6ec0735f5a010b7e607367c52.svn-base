@@ -1,0 +1,57 @@
+#开发环境
+server:
+  port: 8090
+  #ssl:
+  #  key-store: classpath:2678385_o2xygen.fun.pfx
+  #  key-store-password: vL1UE0LE
+  #  keyStoreType: PKCS12
+
+spring:
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 500MB
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/kis?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari: 
+      connectionTimeout: 30000
+      idleTimeout: 60000
+      validationTimeout: 3000
+      maxLifetime: 120000
+      loginTimeout: 5
+      maximumPoolSize: 20
+      minimumIdle: 10
+    message:
+      baseame: static/i18n/messages #相对路径 开头请勿添加斜杠
+
+  thymeleaf:
+    cache: false #开发时关闭缓存,不然没法看到实时页面
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML5
+    servlet:
+      content-type: text/html
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 0
+    pool:
+      max-idle: 8
+      min-idle: 0
+      max-active: 8
+      max-wait: -1
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cn.com.goldwind.kis.entity

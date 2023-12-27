@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+						http://www.springframework.org/schema/data/jpa 
+						http://www.springframework.org/schema/data/jpa/spring-jpa.xsd" 
+>
+	<!-- 属性文件位置 -->
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:jdbc.properties" />
+	
+    <!-- 使用Annotation自动注册Bean，解决事务失效问题：在主容器中不扫描@Controller注解，在SpringMvc中只扫描@Controller注解。  -->
+	<context:component-scan base-package="com.mdip.web"><!-- base-package 如果多个，用“,”分隔 -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+<!-- 
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"></bean>
+ 	<bean id="entityManagerFactory"	class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter" />
+        加入定制化包路径 
+        <property name="packagesToScan" value="com.mdip.web.model" />
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+		<property name="loadTimeWeaver">
+			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+		</property>
+	</bean>
+-->	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"></bean>
+ 	<bean id="entityManagerFactory"	class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+		<property name="loadTimeWeaver">
+			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+		</property>
+	</bean>
+	
+     
+    <!-- 阿里 druid数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">  
+         <!-- 数据库基本信息配置 -->
+         <property name="url" value="${jdbc.url}" />  
+         <property name="username" value="${jdbc.username}" />  
+         <property name="password" value="${jdbc.password}" />  
+         <property name="driverClassName" value="${jdbc.driverClassName}" />  
+         <property name="filters" value="${jdbc.filters}" />  
+   		 <!-- 最大并发连接数 -->
+         <property name="maxActive" value="${jdbc.maxActive}" />
+         <!-- 初始化连接数量 -->
+         <property name="initialSize" value="${jdbc.initialSize}" />
+         <!-- 配置获取连接等待超时的时间 -->
+         <property name="maxWait" value="${jdbc.maxWait}" />
+         <!-- 最小空闲连接数 -->
+         <property name="minIdle" value="${jdbc.minIdle}" />  
+   		 <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+         <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}" />
+         <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+         <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}" />  
+         <property name="validationQuery" value="${jdbc.validationQuery}" />  
+         <property name="testWhileIdle" value="${jdbc.testWhileIdle}" />  
+         <property name="testOnBorrow" value="${jdbc.testOnBorrow}" />  
+         <property name="testOnReturn" value="${jdbc.testOnReturn}" />  
+         <property name="maxOpenPreparedStatements" value="${jdbc.maxOpenPreparedStatements}" />
+         <!-- 打开removeAbandoned功能 -->
+         <property name="removeAbandoned" value="${jdbc.removeAbandoned}" />
+         <!-- 1800秒，也就是30分钟 -->
+         <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}" />
+         <!-- 关闭abanded连接时输出错误日志 -->   
+         <property name="logAbandoned" value="${jdbc.logAbandoned}" />
+	</bean>
+
+    <!-- 设置JPA实现厂商的特定属性 -->
+    <bean id="hibernateJpaVendorAdapter"
+        class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="databasePlatform" value="${hibernate.dialect}"/>
+    </bean>
+    
+    
+    <!-- 使用JPA的的事务器 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- 配置声明式事务：方法一，在Service实现类或者public实现方法上使用注解@Transactional，则此类或方法就会启用事务机制 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 需要注册的bean -->
+	<bean class="com.mdip.web.framework.base.util.SpringContextHolder"></bean>
+	<bean id="idGen" class="com.mdip.web.framework.base.util.IdGen"></bean>
+	
+<!--	
+     Jpa 事务配置
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    
+    Spring Data Jpa配置
+    <jpa:repositories base-package="com.mdip.web.repository"  transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>
+
+    使用annotation定义事务
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+	<bean class="com.mdip.web.framework.base.util.SpringContextHolder"></bean>
+	<bean id="idGen" class="com.mdip.web.framework.base.util.IdGen"></bean>
+-->
+</beans>

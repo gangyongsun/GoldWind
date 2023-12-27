@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.goldwind.kis.shiro.dao.SysUserRoleMapper">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.shiro.domain.SysUserRole">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="role_id" property="roleId" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 根据用户ID删除用户角色 -->
+	<delete id="deleteUserRoleRelationshipByUserId">
+		delete from sys_user_role where user_id = #{userId,jdbcType=BIGINT}
+	</delete>
+	<!-- 根据用户ID清空用户角色关系 -->
+	<delete id="deleteUserRoleRelationshipByUserIds">
+		delete from sys_user_role where user_id in
+		<foreach collection="array" item="userIds" index="index" open="(" close=")" separator=",">
+	      #{userIds}
+	    </foreach>
+	</delete>
+	<!-- 根据roleId查询用户ID列表 -->
+	<select id="findUserIdListByRoleId" resultType="java.lang.Integer">
+		select user_id from sys_user_role where role_id = #{id,jdbcType=BIGINT}
+	</select>
+</mapper>

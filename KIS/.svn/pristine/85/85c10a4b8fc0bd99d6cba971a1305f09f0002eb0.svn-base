@@ -1,0 +1,303 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `t_key_info`;
+CREATE TABLE `t_key_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '词条编号，采取自动递增形式',
+  `chinese` text NOT NULL COMMENT '中文词条，主键',
+  `english` text NOT NULL COMMENT '英文条目',
+  `classification1` varchar(512) DEFAULT NULL COMMENT '一级分类',
+  `classification2` varchar(512) DEFAULT NULL COMMENT '二级分类',
+  `classification3` varchar(512) DEFAULT NULL COMMENT '三级分类',
+  `source` varchar(512) DEFAULT NULL COMMENT '文档来源：即词条出现的文档或者文献来源',
+  `remark` varchar(45) DEFAULT NULL COMMENT '备注，相关信息说明字段',
+  `contributor` varchar(45) DEFAULT NULL COMMENT '词条审核或者贡献者名字',
+  `image` varchar(255) DEFAULT NULL COMMENT '词条对应的图片名称或者超链接地址',
+  `xremark` varchar(255) DEFAULT NULL COMMENT '历史版本的备注信息',
+  `sentenceCN` text COMMENT '中文参考例句，句子之间使用“$$”进行分割',
+  `sentenceCNResource` varchar(256) DEFAULT NULL COMMENT '中文参考例句的来源',
+  `sentenceEN` text COMMENT '英文参考例句，句子之间使用“$$”进行分割',
+  `sentenceENResource` varchar(256) DEFAULT NULL COMMENT '英文参考例句的来源',
+  `abbreviationCN` varchar(256) DEFAULT NULL COMMENT '中文简称',
+  `abbreviationEN` varchar(256) DEFAULT NULL COMMENT '英文简称或者缩写',
+  `synonymCN` varchar(512) DEFAULT NULL COMMENT '中文同义词，多个同义词之间使用“;”进行分割',
+  `synonymEN` varchar(512) DEFAULT NULL COMMENT '英文同义词，多个同义词之间使用“;”进行分割',
+  `definationCN` varchar(1024) DEFAULT NULL COMMENT '中文词条对应的定义内容',
+  `definationCNResource` varchar(512) DEFAULT NULL COMMENT '中文定义的来源或者出处',
+  `definationEN` varchar(1024) DEFAULT NULL COMMENT '英文词条定义的内容',
+  `definationENResource` varchar(512) DEFAULT NULL COMMENT '英文定义的来源或者出处',
+  `status` varchar(64) DEFAULT NULL COMMENT '有两种状态：\nreviewed和unreviewed\r\n',
+  `totalClick` int(11) DEFAULT 0 COMMENT '词语的点击和搜索次数，用于计算热词使用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `t_key_info_nonesearch`;
+
+CREATE TABLE `t_key_info_nonesearch` (
+  `id` int(11)  not null primary key auto_increment COMMENT  '递增主键',
+  `searchContent` varchar(32) COMMENT '搜索内容',
+  `searchNumber` int(11)  COMMENT '搜索次数'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `t_webresponse`;
+create table t_webresponse(
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+    `empNO` varchar(16) NULL,
+    `content` text NOT NULL,
+    `create_time` timestamp NOT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `t_webaccess_log`;
+
+create table t_webaccess_log(
+	`id` int(11) NOT NULL AUTO_INCREMENT  COMMENT '主键',
+    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+    `accessTime` timestamp NOT NULL COMMENT '访问时间',
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+
+DROP TABLE IF EXISTS `t_termtypebrowse_log`;
+
+create table t_termtypebrowse_log(
+	`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+     `termType` varchar(512) NOT NULL COMMENT '术语类型',
+    `browseCounts` int(11) DEFAULT 0  NOT NULL COMMENT '浏览次数',
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+DROP TABLE IF EXISTS `t_search_log`;
+
+create table t_search_log(
+	`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+     `findContent` varchar(256) NOT NULL COMMENT '搜索内容',
+    `searchCounts` int(11) DEFAULT 0  NOT NULL COMMENT '搜索次数',
+    `isAccurate` tinyint DEFAULT 0 NOT NULL COMMENT '0代表无匹配搜索内容；1代表精确匹配搜索内容；2代表分词匹配搜索内容',
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+DROP TABLE IF EXISTS `t_click_log`;
+
+create table t_click_log(
+	`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+     `termId` int(11) NOT NULL COMMENT '术语条目主键id',
+    `clickCounts` int(11) DEFAULT 0  NOT NULL COMMENT '点击查看的次数',
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+DROP TABLE IF EXISTS `organization`;
+
+CREATE TABLE `organization` (
+  `orgCode` varchar(32) NOT NULL COMMENT '所在组织编号',
+  `orgName` varchar(64) NOT NULL COMMENT '所在组织名称',
+  `parentOrgCode` varchar(32) DEFAULT NULL COMMENT '上级组织编号',
+  `parentOrgName` varchar(64) DEFAULT NULL COMMENT '上级组织名称',
+  `orgDirectorLeader` varchar(64) DEFAULT NULL COMMENT '所在组织直管领导',
+  `orgBranchLeader` varchar(64) DEFAULT NULL COMMENT '所在组织分管领导',
+  `orgPostCode` varchar(32) DEFAULT NULL COMMENT '分管领导编号',
+  `jglb` varchar(64) DEFAULT NULL COMMENT '机构类比',
+  `jgbm` varchar(32) DEFAULT NULL COMMENT '机构编码',
+  `orgEName` varchar(128) DEFAULT NULL COMMENT '所在组织英文名称 部门英文名称',
+  PRIMARY KEY (`orgCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织信息表';
+
+DROP TABLE IF EXISTS `employees`;
+
+CREATE TABLE `employees` (
+  `userId` varchar(32) NOT NULL COMMENT '人员编码',
+  `userName` varchar(64) NOT NULL COMMENT '人员姓名',
+  `unitId` varchar(32) DEFAULT NULL COMMENT '所在单位编码',
+  `unitTxt` varchar(128) DEFAULT NULL COMMENT '所在单位名称',
+  `systemId` varchar(32) DEFAULT NULL COMMENT '所属系统编码',
+  `systemTxt` varchar(128) DEFAULT NULL COMMENT '所属系统名称',
+  `stell` varchar(32) DEFAULT NULL COMMENT '岗位编码',
+  `stext` varchar(64) DEFAULT NULL COMMENT '岗位名称',
+  `deptId` varchar(32) DEFAULT NULL COMMENT '所在部门编码',
+  `deptName` varchar(64) DEFAULT NULL COMMENT '所在部门名称',
+  `zhrOtext` varchar(64) DEFAULT NULL COMMENT '人员直属组织名称',
+  `phoneNumber` varchar(32) DEFAULT NULL COMMENT '电话',
+  `email` varchar(128) DEFAULT NULL COMMENT 'email',
+  `centerId` varchar(32) DEFAULT NULL COMMENT '所在中心编码',
+  `centerTxt` varchar(128) DEFAULT NULL COMMENT '所在中心名称',
+  `zhrTime1` varchar(32) DEFAULT NULL COMMENT '入司日期',
+  `zhrRzrq` varchar(32) DEFAULT NULL COMMENT '入职日期',
+  `orgeh` varchar(32) DEFAULT NULL COMMENT '人员直属组织编码',
+  `officeId` varchar(32) DEFAULT NULL COMMENT '所在科室编码',
+  `officeTxt` varchar(128) DEFAULT NULL COMMENT '所在科室名称',
+  `directorCode` varchar(32) DEFAULT NULL COMMENT '人员直管领导编码',
+  `branchCode` varchar(32) DEFAULT NULL COMMENT '人员分管领导编码',
+  `zhrCost` varchar(32) DEFAULT NULL COMMENT '成本中心编码',
+  `zhrCostTxt` varchar(128) DEFAULT NULL COMMENT '成本中心名称',
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表'
+
+-- ----------------------------
+-- Table structure for sys_resources
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_resources`;
+CREATE TABLE `sys_resources` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `resource_name` varchar(255) DEFAULT NULL COMMENT '资源名称',
+  `resource_url` varchar(255) DEFAULT NULL COMMENT '资源url',
+  `resource_type` int(11) DEFAULT NULL COMMENT '资源类型   1:菜单    2：按钮',
+  `parent_id` int(11) DEFAULT NULL COMMENT '父资源',
+  `resource_sort` int(11) DEFAULT NULL COMMENT '排序',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_resources
+-- ----------------------------
+INSERT INTO `sys_resources` VALUES (null,'系统管理','system/management',1,null,1);
+INSERT INTO `sys_resources` VALUES (null,'用户管理','user/management',1,null,2);
+INSERT INTO `sys_resources` VALUES (null,'用户列表','user/list',1,null,3);
+INSERT INTO `sys_resources` VALUES (null,'添加用户','user/add',2,null,4);
+INSERT INTO `sys_resources` VALUES (null,'批量删除用户','user/multidelete',2,null,5);
+INSERT INTO `sys_resources` VALUES (null,'删除用户','user/delete',2,null,6);
+INSERT INTO `sys_resources` VALUES (null,'禁止登陆','user/deactive',2,null,7);
+INSERT INTO `sys_resources` VALUES (null,'激活登陆','user/active',2,null,8);
+INSERT INTO `sys_resources` VALUES (null,'重置密码','user/passwordreset',2,null,9);  
+INSERT INTO `sys_resources` VALUES (null,'在线用户','user/onlinelist',1,null,10);
+INSERT INTO `sys_resources` VALUES (null,'在线用户详情','user/onlinedetail',2,null,11);
+INSERT INTO `sys_resources` VALUES (null,'在线用户踢出','user/onlinedeactive',2,null,12);
+INSERT INTO `sys_resources` VALUES (null,'在线用户激活','user/onlineactive',2,null,13);  
+INSERT INTO `sys_resources` VALUES (null,'权限管理','privilege/management',1,null,14); 
+INSERT INTO `sys_resources` VALUES (null,'角色列表','role/list',1,null,15);
+INSERT INTO `sys_resources` VALUES (null,'添加角色','role/add',2,null,16);
+INSERT INTO `sys_resources` VALUES (null,'编辑角色','role/edit',2,null,17);
+INSERT INTO `sys_resources` VALUES (null,'批量删除角色','role/multidelete',2,null,18);
+INSERT INTO `sys_resources` VALUES (null,'删除角色','role/delete',2,null,19);  
+INSERT INTO `sys_resources` VALUES (null,'角色分配','role/roleallocationlist',1,null,20);
+INSERT INTO `sys_resources` VALUES (null,'清空用户角色','role/emptyrolesofuser',2,null,21);
+INSERT INTO `sys_resources` VALUES (null,'选择角色','role/grantroles2user',2,null,22);  
+INSERT INTO `sys_resources` VALUES (null,'权限列表','resource/list',1,null, 23);
+INSERT INTO `sys_resources` VALUES (null,'添加权限','resource/add',2,null, 24);
+INSERT INTO `sys_resources` VALUES (null,'编辑权限','resource/edit',2,null, 25);
+INSERT INTO `sys_resources` VALUES (null,'批量删除权限','resource/multidelete',2,null,26);
+INSERT INTO `sys_resources` VALUES (null,'删除权限','resource/delete',2,null, 27);  
+INSERT INTO `sys_resources` VALUES (null,'权限分配','resource/resourceallocationlist',1,null,28);
+INSERT INTO `sys_resources` VALUES (null,'清空角色权限','resource/emptyresourceofrole',2,null,29);
+INSERT INTO `sys_resources` VALUES (null,'选择权限','resource/grantresource2role',2,null,30);
+INSERT INTO `sys_resources` VALUES (null,'文件上传','file/upload',1,null,31);
+INSERT INTO `sys_resources` VALUES (null,'上传文件','file/uploadfile',2,null,32);
+INSERT INTO `sys_resources` VALUES (null,'文件列表','file/list',2,null,33);
+INSERT INTO `sys_resources` VALUES (null,'非术语搜索记录','nonsearchtermlist',2,null,34);
+INSERT INTO `sys_resources` VALUES (null,'用户反馈','webResponse',2,null,35);
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_desc` varchar(255) DEFAULT NULL,
+  `role_type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+INSERT INTO `sys_role` VALUES (null,'系统管理员','administrator');
+INSERT INTO `sys_role` VALUES (null,'文件上传角色','user');
+
+
+-- ----------------------------
+-- Table structure for sys_role_resources
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_resources`;
+CREATE TABLE `sys_role_resources` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) NOT NULL,
+  `resources_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_role_resources
+-- ----------------------------
+INSERT INTO `sys_role_resources` VALUES (null, 1, 1);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 2);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 3);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 4);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 5);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 6);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 7);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 8);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 9);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 10);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 11);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 12);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 13);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 14);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 15);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 16);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 17);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 18);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 19);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 20);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 21);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 22);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 23);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 24);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 25);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 26);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 27);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 28);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 29);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 30);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 31);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 32);
+INSERT INTO `sys_role_resources` VALUES (null, 1, 33);
+INSERT INTO `sys_role_resources` VALUES (null, 2, 31);
+INSERT INTO `sys_role_resources` VALUES (null, 2, 32);
+INSERT INTO `sys_role_resources` VALUES (null, 2, 33);
+
+-- ----------------------------
+-- Table structure for sys_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(33) DEFAULT NULL,
+  `pass_word` varchar(33) DEFAULT NULL,
+  `nick_name` varchar(33) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL,
+  `lastLogin_time` timestamp NULL DEFAULT NULL,
+  `user_enable` int(10) DEFAULT '1' COMMENT '是否启用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
+INSERT INTO `sys_user` VALUES (null,  'admin', '57dd03ed397eabaeaa395eb740b770fd','老板', now(), now(), '1');
+INSERT INTO `sys_user` VALUES (null,  'Rose', '57dd03ed397eabaeaa395eb740b770fd','老板娘', now(), now(), '1');
+INSERT INTO `sys_user` VALUES (null,  'Tom', 'ab8f7bf46c197660c45611eba9f36198', '汤姆',now(), now(), '1');
+INSERT INTO `sys_user` VALUES (null, 'Jerry', 'ab8f7bf46c197660c45611eba9f36198','杰瑞', now(), now(), '1');
+
+
+
+-- ----------------------------
+-- Table structure for sys_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_role`;
+CREATE TABLE `sys_user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
+INSERT INTO `sys_user_role` VALUES (null, 1, 1);
+INSERT INTO `sys_user_role` VALUES (null, 2, 1);
+INSERT INTO `sys_user_role` VALUES (null, 3, 2);
+INSERT INTO `sys_user_role` VALUES (null, 4, 2);

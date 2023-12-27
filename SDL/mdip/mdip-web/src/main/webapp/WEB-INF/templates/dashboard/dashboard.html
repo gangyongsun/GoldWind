@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- main content start-->
+	<div class="main-content" th:fragment="dashboard-main-content">
+		<!-- page heading start-->
+		<div class="page-heading">
+			<h3>MDIP统计页面</h3>
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">MDIP</a>
+				</li>
+				<li class="active">统计页面</li>
+			</ul>
+			<!-- <div class="state-info">
+				<section class="panel">
+					<div class="panel-body">
+						<div class="summary">
+							<span>失败处理文件</span>
+							<h3 class="red-txt">200</h3>
+						</div>
+						<div id="income" class="chart-bar"></div>
+					</div>
+				</section>
+				<section class="panel">
+					<div class="panel-body">
+						<div class="summary">
+							<span>成功处理文件</span>
+							<h3 class="green-txt">45,600</h3>
+						</div>
+						<div id="expense" class="chart-bar"></div>
+					</div>
+				</section>
+			</div> -->
+		</div>
+		<!-- page heading end-->
+
+		<!--body wrapper start-->
+		<div class="wrapper">
+			<div class="row">
+				<div class="col-md-4">
+					<!--statistics start-->
+					<div class="row state-overview">
+						<div class="col-md-6 col-xs-12 col-sm-6">
+							<div class="panel purple">
+								<div class="symbol">
+									<i class="fa fa-gavel"></i>
+								</div>
+								<a th:href="@{###}" onclick="runningJobDashboardClick('Running')">
+									<div class="state-value">
+										<div class="value" th:text="${runningNum}">0</div>
+										<div class="title">运行中作业数量</div>
+									</div>
+								</a>
+							</div>
+						</div>
+						<div class="col-md-6 col-xs-12 col-sm-6">
+							<div class="panel red">
+								<div class="symbol">
+									<i class="fa fa-tags"></i>
+								</div>
+								<a th:href="@{###}" onclick="runningJobDashboardClick('Stopped')">
+									<div class="state-value">
+										<div class="value text-primary" th:text="${stoppedNum}">0</div>
+										<div class="title text-primary">停止的作业数量</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="row state-overview">
+						<div class="col-md-6 col-xs-12 col-sm-6">
+							<div class="panel green">
+								<div class="symbol">
+									<i class="fa fa-money"></i>
+								</div>
+								<a th:href="@{###}" onclick="runningJobDashboardClick('Finished')">
+									<div class="state-value">
+										<div class="value text-warning" th:text="${finishedNum}">0</div>
+										<div class="title text-warning">完成的作业数量</div>
+									</div>
+								</a>
+							</div>
+						</div>
+						<div class="col-md-6 col-xs-12 col-sm-6">
+							<div class="panel blue">
+								<div class="symbol">
+									<i class="fa fa-eye"></i>
+								</div>
+								<a th:href="@{###}" onclick="runningJobDashboardClick('Finished (with errors)')">
+									<div class="state-value">
+										<div class="value text-success" th:text="${othersNum}">0</div>
+										<div class="title text-success">其他状态作业数量</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!--statistics end-->
+				</div>
+				<div class="col-md-8">
+					<div class="panel">
+						<header class="panel-heading">各作业日志文件大小（单位：M） </header>
+						<div class="panel-body">
+							<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+							<div id="dashboardEcharts" style="height: 400px"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div id="cpuBoard" style="width: 400px; height: 300px;"></div>
+				</div>
+				<div class="col-md-4">
+					<div id="memBoard" style="width: 400px; height: 300px;"></div>
+				</div>
+				<div class="col-md-4">
+					<div id="diskBoard" style="width: 400px; height: 300px;"></div>
+				</div>
+			</div>
+		</div>
+		<!--body wrapper end-->
+	</div>
+	<!-- main content end-->
+</body>
+</html>

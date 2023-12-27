@@ -1,0 +1,168 @@
+$(function() {
+	depNameDescTablePage();
+	empDescTablePage();
+	//请求折线图数据
+	$.ajax({
+		type : "POST",
+		url : '/console/dailyAccessBoList',
+		success : function(data) {
+			var dateArray = [];
+			var accessCountArray = [];
+			var accessEmpCountArray = [];
+			for ( var i in data) {
+				dateArray.push(data[i].accessDate);
+				accessCountArray.push(data[i].accessCount);
+				accessEmpCountArray.push(data[i].accessEmpCount);
+			}
+			console.log(dateArray);
+			console.log(accessCountArray);
+			console.log(accessEmpCountArray);
+			init_lineStack(dateArray, accessCountArray,accessEmpCountArray);// 初始化折线图
+		},
+		error : function(data) {
+			console.log("折线图初始化失败!");
+		}
+	});
+})
+
+function depNameDescTablePage() {
+	var t = $("#depNameDescTable");
+	t.bootstrapTable('destroy');
+	var t = t.bootstrapTable({
+		url : '/console/depNameDescList',
+		method : 'get',
+		dataType : "json",
+		cache : false, // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		undefinedText : "空",// 当数据为undefined时显示的字符
+		pagination : true, // 启用分页
+		pageNumber : 1,// 分页首页页码
+		pageSize : 5,// 分页页面数据条数
+		pageList : [ 10, 20, 30, 50, 100 ],// 设置可供选择的页面数据条数；设置为All则显示所有记录
+		paginationFirstText : "首页",// 指定“首页”按钮的图标或文字
+		paginationPreText : '上一页',// 指定“上一页”按钮的图标或文字
+		paginationNextText : '下一页',// 指定“下一页”按钮的图标或文字
+		paginationLastText : "末页",// 指定“末页”按钮的图标或文字
+		data_local : "zh-US",// 表格汉化
+		sidePagination : "server", // 服务端处理分页
+		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
+		idField : "id",// 指定主键列
+		columns : [ {
+			title : '部门名称',
+			field : 'deptName',
+			align : 'left',
+			valign : 'middle'
+		}, {
+			title : '访问人数',
+			field : 'empNum',
+			align : 'left',
+			valign : 'middle'
+		} ]
+	});
+	t.on('load-success.bs.table', function(data) {// table加载成功后的监听函数
+		console.log("load console success");
+		$(".pull-right").css("display", "block");
+	});
+}
+
+function empDescTablePage() {
+	var t = $("#empDescTable");
+	t.bootstrapTable('destroy');
+	var t = t.bootstrapTable({
+		url : '/console/empDescList',
+		method : 'get',
+		dataType : "json",
+		cache : false, // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		undefinedText : "空",// 当数据为undefined时显示的字符
+		pagination : true, // 启用分页
+		pageNumber : 1,// 分页首页页码
+		pageSize : 5,// 分页页面数据条数
+		pageList : [ 10, 20, 30, 50, 100 ],// 设置可供选择的页面数据条数；设置为All则显示所有记录
+		paginationFirstText : "首页",// 指定“首页”按钮的图标或文字
+		paginationPreText : '上一页',// 指定“上一页”按钮的图标或文字
+		paginationNextText : '下一页',// 指定“下一页”按钮的图标或文字
+		paginationLastText : "末页",// 指定“末页”按钮的图标或文字
+		data_local : "zh-US",// 表格汉化
+		sidePagination : "server", // 服务端处理分页
+		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
+		idField : "id",// 指定主键列
+		columns : [ {
+			title : '员工姓名',
+			field : 'userName',
+			align : 'left',
+			valign : 'middle'
+		}, {
+			title : '访问次数',
+			field : 'accessCount',
+			align : 'left',
+			valign : 'middle'
+		} ]
+	});
+	t.on('load-success.bs.table', function(data) {// table加载成功后的监听函数
+		console.log("load console success");
+		$(".pull-right").css("display", "block");
+	});
+}
+
+/**
+ * 初始化折线图
+ */
+function init_lineStack(dateArray, accessCountArray,accessEmpCountArray) {
+	var dom = document.getElementById("line-stack-daily");
+	var myChart = echarts.init(dom);
+	var app = {};
+	option = null;
+	option = {
+		title : {
+			text : ''
+		},
+		tooltip : {
+			trigger : 'axis'
+		},
+		legend : {
+			data : [ '访问次数', '访问人数' ]
+		},
+		grid : {
+			left : '1%',
+			right : '1%',
+			bottom : '1%',
+			containLabel : true
+		},
+		toolbox : {
+			feature : {
+				saveAsImage : {}
+			}
+		},
+		xAxis : {
+			type : 'category',
+			boundaryGap : false,
+			data : dateArray,
+			axisLabel:{
+	            interval:0,
+	            rotate:45
+			}
+		},
+		yAxis : {
+			type : 'value'
+		},
+		series : [ {
+			name : '访问次数',
+			type : 'line',
+			stack : '总量',
+			data : accessCountArray
+		}, {
+			name : '访问人数',
+			type : 'line',
+			stack : '总量',
+			data : accessEmpCountArray
+		}]
+	};
+	if (option && typeof option === "object") {
+		myChart.setOption(option, true);
+	}
+}

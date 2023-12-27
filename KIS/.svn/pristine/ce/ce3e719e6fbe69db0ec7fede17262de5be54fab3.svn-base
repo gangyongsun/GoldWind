@@ -1,0 +1,13 @@
+package cn.com.goldwind.kis.service;
+
+import org.springframework.ui.ModelMap;
+
+import cn.com.goldwind.kis.entity.WebAccessLog;
+import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
+
+public interface WebAccessLogService {
+	public TableSplitResult<WebAccessLog> findPage(ModelMap map, Integer pageNumber, Integer pageSize);
+
+	public int insert(WebAccessLog webAccessLog);
+
+}

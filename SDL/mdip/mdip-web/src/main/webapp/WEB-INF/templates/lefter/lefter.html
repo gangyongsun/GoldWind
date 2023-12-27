@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body class="sticky-header">
+	<!-- left side start-->
+	<div class="left-side sticky-left-side" th:fragment="lefter">
+		<!--logo and iconic logo start-->
+		<div th:replace="/lefter/logo :: logo"></div>
+		<!--logo and iconic logo end-->
+
+		<div class="left-side-inner">
+			<!-- visible to small devices only -->
+			<!-- <div th:replace="/lefter/hiddenprofile :: hiddenprofile"></div> -->
+
+			<!--sidebar nav start-->
+			<ul th:replace="/lefter/sidebar :: sidebar"></ul>
+			<!--sidebar nav end-->
+		</div>
+	</div>
+	<!-- left side end-->
+</body>
+</html>

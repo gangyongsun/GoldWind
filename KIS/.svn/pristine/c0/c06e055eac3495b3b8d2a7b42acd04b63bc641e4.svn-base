@@ -1,0 +1,34 @@
+package cn.com.goldwind.kis.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Data;
+
+@Data
+@Table(name = "t_webresponse")
+public class WebResponse implements Serializable {
+	private static final long serialVersionUID = -1533504582613357650L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SELECT LAST_INSERT_ID()")
+	private Integer id;
+	
+	@Column(name = "empNO")
+	private String empNO;
+	
+	@Column(name = "content")
+	private String content;
+
+	@Column(name = "responseTime")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+	private Date responseTime;
+}

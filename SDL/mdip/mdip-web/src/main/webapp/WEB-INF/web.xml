@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+	<display-name>MDIP</display-name>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:applicationContext*.xml</param-value>
+	</context-param>
+      
+	<context-param>
+		<param-name>logbackConfigLocation</param-name>
+		<param-value>classpath:logback.xml</param-value>
+	</context-param>	
+	<listener>
+		<listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+	</listener>
+    
+	<!-- 防止发生java.beans.Introspector内存泄露,应将它配置在ContextLoaderListener的前面 -->  
+	<!-- 详细描述见http://blog.csdn.net/jadyer/article/details/11991457 -->  
+	<listener>  
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>  
+	</listener>  
+    
+	<!-- 实例化Spring容器 -->  
+	<!-- 应用启动时,该监听器被执行,它会读取Spring相关配置文件,其默认会到WEB-INF中查找applicationContext.xml -->  
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    
+	<!--定时任务，删除bak中过期的文件-->
+	<listener>  
+		<listener-class>com.mdip.timedTask.listeners.KettleBakfileCleanTaskListener</listener-class>  
+	</listener>  
+	<!--定时任务,检查job状态，与数据库同步-->
+	<listener>  
+		<listener-class>com.mdip.timedTask.listeners.KettleJobStatusUpdateTaskListener</listener-class>  
+	</listener>
+    
+	<!-- 配置编码过滤器 -->
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
+	<!-- shiro -->
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
+	<!-- 配置spring管理OpenEntityManagerInViewFilter-->
+	<!-- OpenEntityManagerInViewFilter会让session一直到view层调用结束后才关闭
+			Spring针对Hibernate的非JPA实现用的是OpenSessionInViewFilter，原理与这个大同小异
+		 -->
+	<filter>
+		<filter-name>hibernateFilter</filter-name>
+		<filter-class>
+            org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>hibernateFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
+	<!-- 用默认的servlet来处理资源 -->
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name> 
+		<url-pattern>*.jpg</url-pattern>    
+	</servlet-mapping> 
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name> 
+		<url-pattern>*.png</url-pattern>    
+	</servlet-mapping>     
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name> 
+		<url-pattern>*.gif</url-pattern>    
+	</servlet-mapping> 
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name> 
+		<url-pattern>*.woff</url-pattern>    
+	</servlet-mapping> 
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name> 
+		<url-pattern>*.ttf</url-pattern>    
+	</servlet-mapping>          
+	<servlet-mapping>  
+		<servlet-name>default</servlet-name> 
+		<url-pattern>*.map</url-pattern>    
+	</servlet-mapping>      
+	<servlet-mapping>      
+		<servlet-name>default</servlet-name>   
+		<url-pattern>*.js</url-pattern>   
+	</servlet-mapping>  
+	<servlet-mapping>       
+		<servlet-name>default</servlet-name>      
+		<url-pattern>*.css</url-pattern>     
+	</servlet-mapping>
+	<!--      
+			<servlet-mapping>       
+				<servlet-name>default</servlet-name>      
+				<url-pattern>*.html</url-pattern>     
+			</servlet-mapping>
+		 -->    
+	<!-- SpringMVC核心分发器
+			<servlet>
+				<servlet-name>dispatcherServlet</servlet-name>
+				<servlet-class>
+					org.springframework.web.servlet.DispatcherServlet
+				</servlet-class>
+				<init-param>
+					<param-name>contextConfigLocation</param-name>
+					<param-value>classpath:applicationContext-mvc.xml</param-value>
+				</init-param>
+				<load-on-startup>1</load-on-startup>
+			</servlet>
+			<servlet-mapping>
+				<servlet-name>dispatcherServlet</servlet-name>
+				<url-pattern>/</url-pattern>
+			</servlet-mapping>
+		 -->
+	<!-- springMVC -->
+	<servlet>
+		<servlet-name>springServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:applicationContext*.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	  
+	<!-- 验证码 -->
+	<servlet>
+		<servlet-name>ValidateCodeImg</servlet-name>
+		<servlet-class>com.mdip.web.framework.security.web.ValidateCodeServletImg</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ValidateCodeImg</servlet-name>
+		<url-pattern>/servlet/validatecodeimg</url-pattern>
+	</servlet-mapping>
+  
+	<!-- druid语句分析监控平台 -->
+	<filter>
+		<filter-name>DruidWebStatFilter</filter-name>
+		<filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+		<init-param>
+			<param-name>exclusions</param-name>
+			<param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>DruidWebStatFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+  
+	<servlet>
+		<servlet-name>DruidStatView</servlet-name>
+		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+		<init-param>
+			<param-name>loginUsername</param-name>
+			<param-value>admin</param-value>
+		</init-param>
+		<init-param>
+			<param-name>loginPassword</param-name>
+			<param-value>admin</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DruidStatView</servlet-name>
+		<url-pattern>/druid/*</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error/500</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error/500</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error/404</location>
+	</error-page>
+</web-app>

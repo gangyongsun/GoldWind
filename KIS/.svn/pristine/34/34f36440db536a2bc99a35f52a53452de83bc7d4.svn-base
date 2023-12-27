@@ -1,0 +1,29 @@
+package cn.com.goldwind.kis.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
+
+import cn.com.goldwind.kis.entity.WebAccessLog;
+import cn.com.goldwind.kis.mybatis.BaseMybatisDao;
+import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
+import cn.com.goldwind.kis.repository.WebAccessLogRepository;
+import cn.com.goldwind.kis.service.WebAccessLogService;
+
+@Service
+public class WebAccessLogServiceImpl extends BaseMybatisDao<WebAccessLog> implements WebAccessLogService {
+
+	@Autowired
+	private WebAccessLogRepository webAccessLogRepository;
+	
+	@Override
+	public TableSplitResult<WebAccessLog> findPage(ModelMap map, Integer pageNumber, Integer pageSize) {
+		return super.findPage(map, pageNumber, pageSize);
+	}
+
+	@Override
+	public int insert(WebAccessLog webAccessLog) {
+		return webAccessLogRepository.insert(webAccessLog);
+	}
+
+}
